@@ -18,8 +18,8 @@ const Hero: React.FC = () => {
         
         <h1 className="text-4xl md:text-7xl font-bold mb-6 text-white leading-tight">
           Yuehan: <br/>
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-600 text-glow">Crafting Worlds</span>, <br/>
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-rose-500 to-purple-600 text-glow-red">Securing Systems.</span>
+          <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-600 text-glow">Small Progress</span>, <br/>
+          <span className="text-transparent bg-clip-text bg-gradient-to-r from-rose-500 to-purple-600 text-glow-red">Still a Progress.</span>
         </h1>
         
         <p className="text-gray-400 text-lg md:text-xl mb-10 max-w-2xl mx-auto leading-relaxed">
