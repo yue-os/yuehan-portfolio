@@ -9,12 +9,11 @@ import {
   Terminal,
   Cpu,
   Globe,
-  Instagram,
-  Discord
+  Instagram
 } from 'lucide-react';
 import { Project, Service, Stat, SocialLink } from './types';
 
-export const HERO_HEADLINE = "Yuehan: Small progress is still progress.";
+export const HERO_HEADLINE = "Yuehan: Small progress, still a progress.";
 export const HERO_SUB = "Full-Stack Developer | Game Dev | Cybersecurity knowledgeable with 5+ years of experience.";
 
 export const STATS: Stat[] = [
@@ -103,5 +102,5 @@ export const SOCIAL_LINKS: SocialLink[] = [
   { platform: "Itch.io", url: "https://itch.io/fibonacci", icon: Gamepad },
   { platform: "Facebook", url: "https://facebook.com/lazyyuehan", icon: Facebook },
   { platform: "Instagram", url: "https://instagram.com/_y.hue", icon: Instagram },
-  { platform: "Discord", url: "https://discord.com/users/1377965367472951417", icon: Discord },
+  { platform: "Discord", url: "https://discord.com/users/1377965367472951417", icon: MessageSquare },
 ];
