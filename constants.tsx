@@ -9,7 +9,8 @@ import {
   Terminal,
   Cpu,
   Globe,
-  Instagram
+  Instagram,
+  MessageSquare
 } from 'lucide-react';
 import { Project, Service, Stat, SocialLink } from './types';
 
