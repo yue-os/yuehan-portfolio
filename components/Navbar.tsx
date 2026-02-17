@@ -31,7 +31,7 @@ const Navbar: React.FC = () => {
           <div className="flex-shrink-0 flex items-center gap-2 group cursor-pointer">
             <Terminal className="w-8 h-8 text-cyan-400 group-hover:text-purple-500 transition-colors" />
             <span className="font-bold text-xl tracking-wider text-white brand-font group-hover:text-cyan-400 transition-colors">
-              0xyue<span className="text-cyan-400 group-hover:text-white">.dev</span>
+              Yue<span className="text-cyan-400 group-hover:text-white">han</span>
             </span>
           </div>
           
