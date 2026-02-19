@@ -53,7 +53,7 @@ export const PROJECTS: Project[] = [
     title: "BatangAware",
     category: "Game Dev",
     description: "A multiplayer health education game designed to teach children about hygiene and disease prevention in a fun, cooperative environment.",
-    techStack: ["Godot", "WebSockets", "Pixel Art"],
+    techStack: ["Godot", "WebSockets", "Pixel Art", "Netcode"],
     imageUrl: "https://picsum.photos/600/400?random=1"
   },
   {
@@ -69,7 +69,7 @@ export const PROJECTS: Project[] = [
     title: "Bayanihan Builders",
     category: "Game Dev",
     description: "Filipino-themed cooperative game focusing on community building and resource management mechanics.",
-    techStack: ["Unity", "C#", "Photon PUN"],
+    techStack: ["Unity", "C#"],
     imageUrl: "https://img.itch.zone/aW1nLzI0NTM1MDIwLnBuZw==/347x500/UjJiNe.png"
   },
   {
@@ -77,7 +77,7 @@ export const PROJECTS: Project[] = [
     title: "Tondo Rift",
     category: "Game Dev",
     description: "Fast-paced tactical fighting game set in a dystopian future version of Tondo. Features complex combo systems and rollback netcode.",
-    techStack: ["Unity", "C#", "GGPO"],
+    techStack: ["Unity", "C#"],
     imageUrl: "https://img.itch.zone/aW1nLzI0NDE5OTkxLnBuZw==/347x500/MTwaz1.png"
   }
 ];
