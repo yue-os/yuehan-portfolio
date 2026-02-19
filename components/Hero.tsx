@@ -18,7 +18,7 @@ const Hero: React.FC = () => {
         
         <h1 className="text-4xl md:text-7xl font-bold mb-6 text-white leading-tight">
           Yuehan: <br/>
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-600 text-glow">Bit</span>, <br/>
+          <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-600 text-glow">Bit</span><br/>
           <span className="text-transparent bg-clip-text bg-gradient-to-r from-rose-500 to-purple-600 text-glow-red">by bit.</span>
         </h1>
         
