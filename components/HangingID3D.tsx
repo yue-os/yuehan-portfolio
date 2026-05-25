@@ -1,10 +1,9 @@
 import React, { useEffect, useRef, useMemo, Suspense } from 'react';
-import { Canvas, ThreeEvent, useFrame, useLoader } from '@react-three/fiber';
+import { Canvas, ThreeEvent, useFrame, useLoader, useThree } from '@react-three/fiber';
 import { RoundedBox } from '@react-three/drei';
 import * as THREE from 'three';
 import { TextureLoader } from 'three';
 
-const ANCHOR = new THREE.Vector3(2.8, 3.2, 0); // Positioned to the left in full-screen
 const CARD_TOP_OFFSET = new THREE.Vector3(0, -0.11, 0); // Top edge of the ID card body
 const UP_AXIS = new THREE.Vector3(0, 1, 0);
 
@@ -21,11 +20,20 @@ const HangingIDModel: React.FC<HangingIDModelProps> = ({
   name = 'Johnmark Calimbo',
   scale = .90
 }) => {
+  const { viewport } = useThree();
+
+  const responsiveAnchor = useMemo(() => {
+    // On desktop (viewport.width > 7), use 2.8. 
+    // On mobile, position it relative to the right edge.
+    const xPos = viewport.width > 7 ? 2.8 : (viewport.width / 2 - 0.6);
+    return new THREE.Vector3(xPos, 3.2, 0);
+  }, [viewport.width]);
+
   const cardRigRef = useRef<THREE.Group>(null);
   const laceRef = useRef<THREE.Mesh>(null);
-  const bobPosRef = useRef(new THREE.Vector3(-2.8, 2.1, 0)); // Adjusted for new offset
+  const bobPosRef = useRef(new THREE.Vector3(viewport.width > 7 ? -2.8 : 0, 2.1, 0));
   const bobVelRef = useRef(new THREE.Vector3(0, 0, 0));
-  const dragTargetRef = useRef(new THREE.Vector3(-2.8, 2.1, 0));
+  const dragTargetRef = useRef(new THREE.Vector3(viewport.width > 7 ? -2.8 : 0, 2.1, 0));
   const draggingRef = useRef(false);
 
   // Use the original offset - the world matrix will handle the scaling
@@ -237,7 +245,7 @@ const HangingIDModel: React.FC<HangingIDModelProps> = ({
       bobVel.y -= 9.81 * dt;
       bobVel.multiplyScalar(Math.exp(-1.8 * dt));
 
-      const rope = bobPos.clone().sub(ANCHOR);
+      const rope = bobPos.clone().sub(responsiveAnchor);
       const ropeLength = Math.max(rope.length(), 0.0001);
       const ropeDir = rope.multiplyScalar(1 / ropeLength);
       const restLength = 1.05;
@@ -262,7 +270,7 @@ const HangingIDModel: React.FC<HangingIDModelProps> = ({
     cardRigRef.current.position.copy(bobPos);
     cardRigRef.current.scale.setScalar(scale);
 
-    const ropeDirForTilt = bobPos.clone().sub(ANCHOR).normalize();
+    const ropeDirForTilt = bobPos.clone().sub(responsiveAnchor).normalize();
     const targetTiltZ = -ropeDirForTilt.x * 1.2 + bobVel.x * 0.15;
     const targetTiltX = ropeDirForTilt.y * 0.2 + bobVel.y * 0.05 + (draggingRef.current ? 0.4 : 0);
     const targetTiltY = bobVel.x * 0.1 + (draggingRef.current ? state.pointer.x * 1.2 : 0);
@@ -274,10 +282,10 @@ const HangingIDModel: React.FC<HangingIDModelProps> = ({
     // Accurate lace attachment using the card's world matrix
     // This correctly handles scaling and rotation without double-counting the scale
     const cardTopWorld = localTop.clone().applyMatrix4(cardRigRef.current.matrixWorld);
-    const laceVector = cardTopWorld.clone().sub(ANCHOR);
+    const laceVector = cardTopWorld.clone().sub(responsiveAnchor);
     const laceLength = Math.max(laceVector.length(), 0.0001);
     const laceDirection = laceVector.clone().multiplyScalar(1 / laceLength);
-    const laceMidpoint = ANCHOR.clone().addScaledVector(laceDirection, laceLength * 0.5);
+    const laceMidpoint = responsiveAnchor.clone().addScaledVector(laceDirection, laceLength * 0.5);
 
     laceRef.current.position.copy(laceMidpoint);
     laceRef.current.quaternion.setFromUnitVectors(UP_AXIS, laceDirection);
@@ -289,7 +297,7 @@ const HangingIDModel: React.FC<HangingIDModelProps> = ({
 
   return (
     <group>
-      <mesh position={ANCHOR.toArray() as any} castShadow frustumCulled={false}>
+      <mesh position={responsiveAnchor.toArray() as any} castShadow frustumCulled={false}>
         <sphereGeometry args={[0.08, 24, 24]} />
         <meshStandardMaterial color="#b3c0d1" metalness={0.85} roughness={0.2} />
       </mesh>
