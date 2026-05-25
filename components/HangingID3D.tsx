@@ -18,9 +18,17 @@ const defaultProfileImageUrl = new URL('../assets/profile.jpg', import.meta.url)
 const HangingIDModel: React.FC<HangingIDModelProps> = ({ 
   imageUrl = defaultProfileImageUrl, 
   name = 'Johnmark Calimbo',
-  scale = .90
+  scale
 }) => {
   const { viewport } = useThree();
+
+  const derivedScale = useMemo(() => {
+    const baseScale = scale || 0.9;
+    // If viewport is narrow, reduce scale further
+    if (viewport.width < 5) return baseScale * 0.55; 
+    if (viewport.width < 7) return baseScale * 0.8;
+    return baseScale;
+  }, [viewport.width, scale]);
 
   const responsiveAnchor = useMemo(() => {
     // On desktop (viewport.width > 7), use 2.8. 
@@ -270,7 +278,7 @@ const HangingIDModel: React.FC<HangingIDModelProps> = ({
     bobPos.y = Math.min(bobPos.y, 4.0);
 
     cardRigRef.current.position.copy(bobPos);
-    cardRigRef.current.scale.setScalar(scale);
+    cardRigRef.current.scale.setScalar(derivedScale);
 
     const ropeDirForTilt = bobPos.clone().sub(responsiveAnchor).normalize();
     const targetTiltZ = -ropeDirForTilt.x * 1.2 + bobVel.x * 0.15;
