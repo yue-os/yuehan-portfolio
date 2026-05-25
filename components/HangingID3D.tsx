@@ -31,9 +31,11 @@ const HangingIDModel: React.FC<HangingIDModelProps> = ({
 
   const cardRigRef = useRef<THREE.Group>(null);
   const laceRef = useRef<THREE.Mesh>(null);
-  const bobPosRef = useRef(new THREE.Vector3(viewport.width > 7 ? -2.8 : 0, 2.1, 0));
+  
+  const initialX = viewport.width > 7 ? 2.8 : (viewport.width / 2 - 0.6);
+  const bobPosRef = useRef(new THREE.Vector3(initialX, 2.1, 0));
   const bobVelRef = useRef(new THREE.Vector3(0, 0, 0));
-  const dragTargetRef = useRef(new THREE.Vector3(viewport.width > 7 ? -2.8 : 0, 2.1, 0));
+  const dragTargetRef = useRef(new THREE.Vector3(initialX, 2.1, 0));
   const draggingRef = useRef(false);
 
   // Use the original offset - the world matrix will handle the scaling
