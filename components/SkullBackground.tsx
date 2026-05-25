@@ -7,6 +7,7 @@ import { OBJLoader, MTLLoader } from 'three-stdlib';
 const MovingSkull: React.FC<{ scale: number }> = ({ scale }) => {
   const skullRef = useRef<THREE.Group>(null);
   const scrollY = useRef(0);
+  const timer = useMemo(() => new (THREE as any).Timer(), []);
   const skullObjUrl = useMemo(() => new URL('../assets/skull/skull.obj', import.meta.url).href, []);
   const skullMtlUrl = useMemo(() => new URL('../assets/skull/skull.mtl', import.meta.url).href, []);
 
@@ -27,6 +28,9 @@ const MovingSkull: React.FC<{ scale: number }> = ({ scale }) => {
   }, [skullModel]);
 
   useFrame((state) => {
+    timer.update();
+    const elapsed = timer.getElapsed();
+
     scrollY.current = window.scrollY;
     const pageHeight = document.documentElement.scrollHeight - window.innerHeight;
     const scrollPercent = scrollY.current / Math.max(pageHeight, 1);
@@ -56,7 +60,7 @@ const MovingSkull: React.FC<{ scale: number }> = ({ scale }) => {
       // skullRef.current.rotateY(Math.PI); 
       
       // Add a slight "breathing" sway
-      skullRef.current.rotation.z += Math.sin(state.clock.elapsedTime * 0.5) * 0.08;
+      skullRef.current.rotation.z += Math.sin(elapsed * 0.5) * 0.08;
     }
   });
 

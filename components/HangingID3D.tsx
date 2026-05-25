@@ -14,8 +14,10 @@ interface HangingIDModelProps {
   scale?: number;
 }
 
+const defaultProfileImageUrl = new URL('../assets/profile.jpg', import.meta.url).href;
+
 const HangingIDModel: React.FC<HangingIDModelProps> = ({ 
-  imageUrl = '../assets/profile.jpg', 
+  imageUrl = defaultProfileImageUrl, 
   name = 'Johnmark Calimbo',
   scale = .90
 }) => {
