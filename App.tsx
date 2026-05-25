@@ -7,10 +7,12 @@ import Projects from './components/Projects';
 import TechStack from './components/TechStack';
 import Footer from './components/Footer';
 import CustomCursor from './components/CustomCursor';
+import SkullBackground from './components/SkullBackground';
 
 function App() {
   return (
-    <div className="min-h-screen bg-[#0d1117] text-white selection:bg-cyan-500/30 selection:text-cyan-200">
+    <div className="min-h-screen bg-transparent text-white selection:bg-cyan-500/30 selection:text-cyan-200">
+      <SkullBackground />
       {/* Desktop only custom cursor for better UX */}
       <div className="hidden lg:block">
         <CustomCursor />

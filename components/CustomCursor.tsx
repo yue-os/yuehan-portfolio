@@ -8,8 +8,10 @@ const CustomCursor: React.FC = () => {
     const handleMouseMove = (e: MouseEvent) => {
       setPosition({ x: e.clientX, y: e.clientY });
       
-      const target = e.target as HTMLElement;
-      setIsPointer(window.getComputedStyle(target).cursor === 'pointer');
+      const target = e.target;
+      if (target instanceof Element) {
+        setIsPointer(window.getComputedStyle(target).cursor === 'pointer');
+      }
     };
 
     window.addEventListener('mousemove', handleMouseMove);
