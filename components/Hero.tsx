@@ -10,7 +10,7 @@ const Hero: React.FC = () => {
       <MatrixBackground />
 
       <div className="absolute inset-0 z-[35] pointer-events-none">
-        <HangingID3D />
+        <HangingID3D scale={window.innerWidth < 768 ? 0.65 : 0.9} />
       </div>
       
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(34,211,238,0.18),transparent_32%),radial-gradient(circle_at_bottom_right,rgba(225,29,72,0.12),transparent_28%),linear-gradient(180deg,rgba(2,6,23,0.15)_0%,rgba(2,6,23,0.55)_58%,rgba(2,6,23,0.92)_100%)] z-10" />
