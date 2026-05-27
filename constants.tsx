@@ -15,10 +15,10 @@ import {
 import { Project, Service, Stat, SocialLink } from './types';
 
 export const HERO_HEADLINE = "Yuehan: Small progress, still a progress.";
-export const HERO_SUB = "Full-Stack Developer | Game Dev | Cybersecurity knowledgeable with 5+ years of experience.";
+export const HERO_SUB = "Full-Stack Developer | Game Dev | Cybersecurity knowledgeable with 2+ years of experience.";
 
 export const STATS: Stat[] = [
-  { label: "Experience", value: "5+ Years", icon: Terminal, color: "text-cyan-400" },
+  { label: "Experience", value: "2+ Years", icon: Terminal, color: "text-cyan-400" },
   { label: "Languages", value: "10+ Mastery", icon: Code2, color: "text-purple-400" },
   { label: "Projects", value: "25+ Shipped", icon: Cpu, color: "text-rose-400" },
 ];
