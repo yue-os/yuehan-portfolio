@@ -52,20 +52,68 @@ export const PROJECTS: Project[] = [
     id: 'p1',
     title: "BatangAware",
     category: "Game Dev",
-    description: "A multiplayer health education game designed to teach children about hygiene and disease prevention in a fun, cooperative environment.",
-    techStack: ["Godot", "WebSockets", "Pixel Art", "Netcode"],
-    imageUrl: "https://picsum.photos/600/400?random=1"
+    description: "A full-stack multiplayer social deduction card game designed for health education, featuring a React dashboard for administrators and a robust backend for real-time game state management.",
+    techStack: ["React", "Vite", "Python", "FastAPI", "Redis", "Supabase"],
+    imageUrl: "https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&q=80&w=1200"
   },
   {
     id: 'p2',
-    title: "Digitalize SurveySystem",
+    title: "CEIT CMS",
     category: "Full Stack",
-    description: "Production-ready feedback platform featuring real-time analytics, custom form builders, and role-based access control.",
-    techStack: ["React", "Node.js", "MongoDB", "Chart.js"],
-    imageUrl: "https://picsum.photos/600/400?random=2"
+    description: "A comprehensive full-stack CMS platform tailored for CEIT, providing seamless content authoring via an async backend API and a high-performance public-facing website.",
+    techStack: ["Next.js", "React", "Tailwind CSS", "FastAPI", "PostgreSQL"],
+    imageUrl: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&q=80&w=800"
   },
   {
     id: 'p3',
+    title: "LinkedIn AI Auto Applier",
+    category: "Security",
+    description: "Intelligent web automation bot that accelerates job applications by leveraging AI to customize resumes and answer forms dynamically while evading bot detection.",
+    techStack: ["Python", "Selenium", "OpenAI API", "Flask", "PyAutoGUI"],
+    imageUrl: "https://images.unsplash.com/photo-1515879218367-8466d910aaa4?auto=format&fit=crop&q=80&w=800"
+  },
+  {
+    id: 'p4',
+    title: "Real-Time Audit Protocol",
+    category: "Security",
+    description: "Decentralized financial auditing protocol that anchors normalized accounting data to an EVM blockchain for immutable, tamper-proof verification.",
+    techStack: ["Node.js", "Express", "TypeScript", "PostgreSQL", "Solidity", "Ethers.js"],
+    imageUrl: "https://images.unsplash.com/photo-1639762681485-074b7f938ba0?auto=format&fit=crop&q=80&w=800"
+  },
+  {
+    id: 'p5',
+    title: "Ghost-Apply Agent",
+    category: "Security",
+    description: "AI-driven job application automation agent utilizing browser automation and Google's Generative AI to streamline complex application workflows.",
+    techStack: ["Node.js", "TypeScript", "Playwright", "Google Generative AI"],
+    imageUrl: "https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&q=80&w=800"
+  },
+  {
+    id: 'p6',
+    title: "Digitalize SurveySystem",
+    category: "Full Stack",
+    description: "Production-ready REST API for a dynamic feedback platform featuring custom form building, real-time analytics, and role-based response management.",
+    techStack: ["ASP.NET Core", "C#", "PostgreSQL"],
+    imageUrl: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=800"
+  },
+  {
+    id: 'p7',
+    title: "MERN Real-Time Message App",
+    category: "Full Stack",
+    description: "Full-stack real-time communication platform enabling instant messaging between users via bidirectional WebSocket connections and document-based storage.",
+    techStack: ["MongoDB", "Express", "React", "Node.js", "Socket.io"],
+    imageUrl: "https://images.unsplash.com/photo-1611746872915-64382b5c76da?auto=format&fit=crop&q=80&w=800"
+  },
+  {
+    id: 'p8',
+    title: "Discord Key Ecosystem",
+    category: "Security",
+    description: "Monetization and access management ecosystem consisting of a Discord bot interface and a companion web API for generating and validating software keys.",
+    techStack: ["Node.js", "Express", "Discord.js", "PostgreSQL", "Nodemailer"],
+    imageUrl: "https://images.unsplash.com/photo-1614064641935-4476a89b4a39?auto=format&fit=crop&q=80&w=800"
+  },
+  {
+    id: 'p9',
     title: "Bayanihan Builders",
     category: "Game Dev",
     description: "Filipino-themed cooperative game focusing on community building and resource management mechanics.",
@@ -73,7 +121,7 @@ export const PROJECTS: Project[] = [
     imageUrl: "https://img.itch.zone/aW1nLzI0NTM1MDIwLnBuZw==/347x500/UjJiNe.png"
   },
   {
-    id: 'p4',
+    id: 'p10',
     title: "Tondo Rift",
     category: "Game Dev",
     description: "Fast-paced tactical fighting game set in a dystopian future version of Tondo. Features complex combo systems and rollback netcode.",
@@ -82,19 +130,63 @@ export const PROJECTS: Project[] = [
   }
 ];
 
+export const EXPERIENCE: Experience[] = [
+  {
+    id: 'e1',
+    company: "Independent Contract Work",
+    role: "Full-Stack Developer & Security Auditor",
+    period: "2024 - Present",
+    description: [
+      "Architected and deployed full-stack educational platforms with real-time multiplayer capabilities.",
+      "Conducted security audits and penetration tests for web and mobile applications.",
+      "Developed advanced automation systems using AI and headless browser technology."
+    ],
+    skills: ["React", "FastAPI", "Blockchain", "Python", "Playwright"]
+  },
+  {
+    id: 'e2',
+    company: "Digitalize Systems",
+    role: "Backend Engineer (Freelance)",
+    period: "2023 - 2024",
+    description: [
+      "Built production-ready REST APIs with ASP.NET Core for feedback and survey management.",
+      "Optimized database queries and schemas for high-concurrency data collection.",
+      "Implemented role-based access control and secure authentication layers."
+    ],
+    skills: ["C#", "ASP.NET Core", "PostgreSQL", "REST API", "Docker"]
+  }
+];
+
 export const TECH_STACK = [
-  { name: "Python", icon: "🐍" },
-  { name: "C#", icon: "#️⃣" },
-  { name: "JavaScript", icon: "JS" },
-  { name: "TypeScript", icon: "TS" },
-  { name: "Unity", icon: "🎮" },
-  { name: "Godot", icon: "🤖" },
-  { name: "Kali Linux", icon: "🐉" },
-  { name: "Docker", icon: "🐳" },
-  { name: "React", icon: "⚛️" },
-  { name: "Next.js", icon: "▲" },
-  { name: "Rust", icon: "🦀" },
-  { name: "PostgreSQL", icon: "🐘" },
+  { category: "Languages", items: [
+    { name: "Python", icon: "🐍" },
+    { name: "C#", icon: "#️⃣" },
+    { name: "TypeScript", icon: "TS" },
+    { name: "JavaScript", icon: "JS" },
+    { name: "Rust", icon: "🦀" },
+    { name: "Solidity", icon: "📜" }
+  ]},
+  { category: "Frameworks", items: [
+    { name: "React", icon: "⚛️" },
+    { name: "Next.js", icon: "▲" },
+    { name: "FastAPI", icon: "🚀" },
+    { name: "Node.js", icon: "🟢" },
+    { name: "ASP.NET", icon: "🌐" }
+  ]},
+  { category: "Engines & Tools", items: [
+    { name: "Unity", icon: "🎮" },
+    { name: "Godot", icon: "🤖" },
+    { name: "Docker", icon: "🐳" },
+    { name: "PostgreSQL", icon: "🐘" },
+    { name: "Supabase", icon: "⚡" },
+    { name: "Redis", icon: "📦" }
+  ]},
+  { category: "Cybersecurity", items: [
+    { name: "Kali Linux", icon: "🐉" },
+    { name: "Burp Suite", icon: "🐝" },
+    { name: "Metasploit", icon: "🎯" },
+    { name: "Nmap", icon: "🔍" }
+  ]}
 ];
 
 export const SOCIAL_LINKS: SocialLink[] = [

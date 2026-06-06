@@ -22,20 +22,35 @@ const Services: React.FC = () => {
           </RevealOnScroll>
         </div>
 
-        <div className="grid gap-6 lg:grid-cols-[0.9fr_1.1fr]">
+        <div className="grid gap-6 lg:grid-cols-[0.8fr_1.2fr]">
           <RevealOnScroll className="h-full">
-            <div className="glass-panel h-full rounded-3xl border border-white/10 p-8">
-              <p className="text-xs uppercase tracking-[0.28em] text-cyan-300">Working mode</p>
-              <h3 className="mt-4 text-3xl font-bold text-white">Sharp output, small loops, visible results.</h3>
-              <p className="mt-4 max-w-md text-sm leading-7 text-slate-300">
-                Each engagement gets a distinct lane: game systems, security assurance, or full-stack execution. The layout reflects that priority instead of hiding it in equal cards.
-              </p>
-              <div className="mt-8 grid gap-3">
-                {['Prototype first', 'Refine fast', 'Ship clean'].map((item) => (
-                  <div key={item} className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-slate-200">
-                    {item}
-                  </div>
-                ))}
+            <div className="glass-panel h-full border border-white/5 p-8 lg:p-12 relative overflow-hidden cyber-corners">
+              <div className="hud-tag">Execution_Core</div>
+              {/* Grid Overlay */}
+              <div className="absolute inset-0 bg-[linear-gradient(rgba(34,211,238,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(34,211,238,0.03)_1px,transparent_1px)] bg-[size:20px_20px] pointer-events-none" />
+              
+              <div className="relative z-10">
+                <p className="text-[10px] font-bold uppercase tracking-[0.4em] text-cyan-400 mb-6">Execution_Strategy</p>
+                <h3 className="text-4xl font-bold text-white leading-tight">Fast loops. High-fidelity output.</h3>
+                <p className="mt-6 text-slate-400 leading-relaxed">
+                  Each build follows a rigorous cycle: prototype deployment, rapid refinement, and security-hardened delivery. No overhead, just pure performance.
+                </p>
+                
+                <div className="mt-12 space-y-4">
+                  {[
+                    { label: 'Phase 01', title: 'Prototype Logic' },
+                    { label: 'Phase 02', title: 'Stress Testing' },
+                    { label: 'Phase 03', title: 'Stable Deployment' }
+                  ].map((item, i) => (
+                    <div key={i} className="flex items-center justify-between border-b border-white/5 pb-4">
+                      <div>
+                        <p className="text-[8px] font-mono text-slate-600 tracking-widest uppercase">{item.label}</p>
+                        <p className="text-sm font-bold text-slate-200 mt-1">{item.title}</p>
+                      </div>
+                      <div className="h-1.5 w-1.5 rounded-full bg-cyan-400 shadow-[0_0_10px_#22d3ee]" />
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           </RevealOnScroll>
@@ -43,55 +58,65 @@ const Services: React.FC = () => {
           <div className="grid gap-6">
           {SERVICES.map((service, index) => {
             const Icon = service.icon;
-            let borderColor = "";
-            let shadowColor = "";
-            let iconTextColor = "";
-            let bulletBgColor = "";
+            let themeColor = "";
+            let glowColor = "";
             
             if (service.color === 'cyan') {
-               borderColor = "hover:border-cyan-500/50";
-               shadowColor = "hover:shadow-[0_0_30px_rgba(34,211,238,0.1)]";
-               iconTextColor = "text-cyan-400";
-               bulletBgColor = "bg-cyan-500";
+              themeColor = "text-cyan-400";
+              glowColor = "shadow-[0_0_20px_rgba(34,211,238,0.1)] hover:border-cyan-500/40";
             } else if (service.color === 'crimson') {
-               borderColor = "hover:border-rose-500/50";
-               shadowColor = "hover:shadow-[0_0_30px_rgba(244,63,94,0.1)]";
-               iconTextColor = "text-rose-400";
-               bulletBgColor = "bg-rose-500";
+              themeColor = "text-rose-500";
+              glowColor = "shadow-[0_0_20px_rgba(244,63,94,0.1)] hover:border-rose-500/40";
             } else {
-               borderColor = "hover:border-purple-500/50";
-               shadowColor = "hover:shadow-[0_0_30px_rgba(168,85,247,0.1)]";
-               iconTextColor = "text-purple-400";
-               bulletBgColor = "bg-purple-500";
+              themeColor = "text-purple-500";
+              glowColor = "shadow-[0_0_20px_rgba(168,85,247,0.1)] hover:border-purple-500/40";
             }
 
             return (
               <RevealOnScroll key={index} delay={index * 150} className="h-full">
                 <div className={`
-                  glass-panel h-full rounded-3xl border border-white/10 p-7
-                  transition-all duration-300 group
-                  ${borderColor} ${shadowColor}
+                  glass-panel h-full border border-white/5 p-8
+                  transition-all duration-500 group relative cyber-corners
+                  ${glowColor}
                 `}>
-                  <div className="mb-5 inline-flex rounded-2xl border border-white/10 bg-white/5 p-4">
-                    <Icon className={`w-7 h-7 ${iconTextColor}`} />
+                  <div className="hud-tag">Eng_Module_0{index + 1}</div>
+                  <div className="flex flex-col md:flex-row gap-8 items-start relative z-10">
+                    <div className="flex-shrink-0">
+                      <div className="rounded-sm border border-white/10 bg-white/5 p-5 relative overflow-hidden">
+                        <Icon className={`w-8 h-8 ${themeColor} relative z-10 transition-transform duration-500 group-hover:scale-110`} />
+                        <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent" />
+                      </div>
+                    </div>
+
+                    <div className="flex-grow">
+                      <div className="flex items-center gap-3 mb-2">
+                        <h3 className="text-2xl font-bold text-white uppercase tracking-wider">
+                          {service.title}
+                        </h3>
+                        <span className="h-[1px] flex-grow bg-white/5" />
+                      </div>
+                      
+                      <p className="mb-8 leading-relaxed text-slate-400 text-sm max-w-xl group-hover:text-slate-200 transition-colors">
+                        {service.description}
+                      </p>
+
+                      <div className="flex flex-wrap gap-x-6 gap-y-3">
+                        {service.skills.map((skill, i) => (
+                          <div key={i} className="flex items-center gap-2 group/skill">
+                            <span className={`w-1 h-3 ${service.color === 'cyan' ? 'bg-cyan-500' : service.color === 'crimson' ? 'bg-rose-500' : 'bg-purple-500'} opacity-30 group-hover/skill:opacity-100 transition-opacity`} />
+                            <span className="text-[10px] font-bold uppercase tracking-widest text-slate-500 group-hover/skill:text-white transition-colors">
+                              {skill}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
                   </div>
 
-                  <h3 className="text-2xl font-bold text-white mb-3 transition-transform group-hover:translate-x-1">
-                    {service.title}
-                  </h3>
-                  
-                  <p className="mb-6 leading-relaxed text-slate-300">
-                    {service.description}
-                  </p>
-
-                  <ul className="grid gap-2 sm:grid-cols-2">
-                    {service.skills.map((skill, i) => (
-                      <li key={i} className="flex items-center gap-2 rounded-xl border border-white/10 bg-black/20 px-3 py-2 text-sm text-slate-400 font-mono">
-                        <span className={`w-2 h-2 rounded-full ${bulletBgColor}`} />
-                        {skill}
-                      </li>
-                    ))}
-                  </ul>
+                  {/* Corner Label */}
+                  <div className="absolute bottom-4 right-6 font-mono text-[8px] text-slate-700">
+                    MODULE_{service.title.replace(' ', '_').toUpperCase()} // STABLE
+                  </div>
                 </div>
               </RevealOnScroll>
             );

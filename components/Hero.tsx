@@ -22,27 +22,27 @@ const Hero: React.FC = () => {
           </div>
 
           <h1 className="max-w-4xl text-5xl font-bold leading-[0.95] text-white md:text-7xl lg:text-8xl">
-            <span className="block">John Mark</span>
+            <span className="block text-glow-cyan">John Mark</span>
             <span className="block text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 via-white to-rose-400">Calimbo</span>
           </h1>
 
           <p className="mt-6 max-w-2xl text-base leading-8 text-slate-300 md:text-lg">
-            {HERO_SUB} {HERO_HEADLINE}
+            {HERO_SUB} <span className="text-cyan-400 font-bold">{HERO_HEADLINE}</span>
           </p>
 
-          <div className="mt-8 flex flex-col gap-4 sm:flex-row">
+          <div className="mt-10 flex flex-col gap-6 sm:flex-row">
             <a 
               href="#projects"
-              className="group inline-flex items-center justify-center gap-2 rounded-full bg-cyan-400 px-8 py-4 text-sm font-bold text-slate-950 transition-all hover:-translate-y-0.5 hover:bg-cyan-300"
+              className="cyber-button group inline-flex items-center justify-center gap-2"
             >
-              View My Work <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+              Access Arsenal <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
             </a>
 
             <a 
               href="#contact"
-              className="inline-flex items-center justify-center rounded-full border border-white/15 bg-white/5 px-8 py-4 text-sm font-bold text-white transition-all hover:border-rose-400/40 hover:bg-rose-400/10 hover:text-rose-200"
+              className="inline-flex items-center justify-center rounded-sm border border-rose-500/50 bg-rose-500/5 px-8 py-4 text-sm font-bold uppercase tracking-widest text-rose-100 transition-all hover:bg-rose-500/20 hover:text-white hover:shadow-[0_0_15px_rgba(244,63,94,0.3)]"
             >
-              Start a Project
+              Initialize Contact
             </a>
           </div>
 

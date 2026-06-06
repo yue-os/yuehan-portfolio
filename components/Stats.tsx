@@ -23,20 +23,27 @@ const Stats: React.FC = () => {
             const Icon = stat.icon;
             return (
               <RevealOnScroll key={index} delay={index * 100}>
-                <div className="glass-panel group rounded-3xl border border-white/10 p-6 transition-all hover:-translate-y-1 hover:border-white/20">
-                  <div className="flex items-start justify-between gap-4">
+                <div className="glass-panel group p-8 cyber-corners transition-all hover:-translate-y-2">
+                  <div className="hud-tag">System_Resource_{index + 1}</div>
+                  <div className="flex items-start justify-between gap-4 relative z-10">
                     <div>
-                      <p className="text-xs uppercase tracking-[0.24em] text-slate-500">{stat.label}</p>
-                      <h3 className={`mt-2 text-3xl font-bold ${stat.color} transition-colors group-hover:text-white`}>
+                      <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-slate-500">Resource: {stat.label}</p>
+                      <h3 className={`mt-2 text-4xl font-bold ${stat.color} transition-colors group-hover:text-glow-cyan`}>
                         {stat.value}
                       </h3>
                     </div>
-                    <div className={`rounded-2xl border border-white/10 bg-white/5 p-3 ${stat.color}`}>
-                      <Icon className="h-7 w-7" />
+                    <div className={`rounded-sm border border-white/10 bg-white/5 p-4 ${stat.color} transition-transform duration-500 group-hover:rotate-[360deg]`}>
+                      <Icon className="h-6 w-6" />
                     </div>
                   </div>
-                  <div className="mt-6 h-1.5 rounded-full bg-white/5">
-                    <div className={`h-full rounded-full bg-gradient-to-r ${index === 0 ? 'from-cyan-400 to-cyan-200' : index === 1 ? 'from-purple-400 to-fuchsia-300' : 'from-rose-400 to-orange-300'} w-[85%]`} />
+                  <div className="mt-8">
+                    <div className="flex justify-between mb-2">
+                      <span className="text-[8px] font-mono text-slate-600">CAPACITY_LINK // SECURE</span>
+                      <span className="text-[8px] font-mono text-slate-600">85%</span>
+                    </div>
+                    <div className="h-[2px] w-full bg-white/5 overflow-hidden">
+                      <div className={`h-full bg-gradient-to-r ${index === 0 ? 'from-cyan-400 to-cyan-200' : index === 1 ? 'from-purple-400 to-fuchsia-300' : 'from-rose-400 to-orange-300'} w-[85%] transition-all duration-1000 group-hover:w-full`} />
+                    </div>
                   </div>
                 </div>
               </RevealOnScroll>

@@ -1,9 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { PROJECTS } from '../constants';
+import { Project } from '../types';
 import RevealOnScroll from './RevealOnScroll';
+import ProjectModal from './ProjectModal';
 import { ExternalLink, Github } from 'lucide-react';
 
 const Projects: React.FC = () => {
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+
   return (
     <section id="projects" className="relative py-20">
       <div className="absolute top-0 right-0 h-full w-1/3 bg-purple-500/5 blur-[110px] pointer-events-none" />
@@ -20,48 +24,94 @@ const Projects: React.FC = () => {
           </p>
         </div>
 
-        <div className="grid gap-6 lg:grid-cols-12">
+        <div className="grid gap-8 lg:grid-cols-12">
           {PROJECTS.map((project, index) => {
-            const featured = index === 0;
+            // Dynamic span logic for a cooler bento layout
+            let colSpan = 'lg:col-span-4';
+            let minHeight = 'min-h-[24rem]';
+            let isFullWidth = false;
+
+            if (index === 0) {
+              colSpan = 'lg:col-span-12';
+              minHeight = 'min-h-[30rem] lg:min-h-[40rem]';
+              isFullWidth = true;
+            } else if (index === 1 || index === 2) {
+              colSpan = 'lg:col-span-6';
+            } else if (index >= 3 && index <= 5) {
+              colSpan = 'lg:col-span-4';
+            } else if (index === 6 || index === 9) {
+              colSpan = 'lg:col-span-8';
+            } else {
+              colSpan = 'lg:col-span-4';
+            }
+
             return (
-              <RevealOnScroll key={project.id} delay={index * 90} className={featured ? 'lg:col-span-7' : 'lg:col-span-5'}>
-                <div className={`group glass-panel relative h-full overflow-hidden rounded-[2rem] border border-white/10 transition-all duration-300 hover:-translate-y-1 hover:border-cyan-400/30 ${featured ? 'min-h-[32rem]' : 'min-h-[18rem]'}`}>
-                  <div className={`relative ${featured ? 'h-full' : 'h-72'}`}>
+              <RevealOnScroll key={project.id} delay={index * 50} className={colSpan}>
+                <div 
+                  onClick={() => setSelectedProject(project)}
+                  className={`group glass-panel relative h-full overflow-hidden border border-white/5 transition-all duration-700 hover:-translate-y-2 hover:border-cyan-500/50 hover:shadow-[0_0_50px_rgba(34,211,238,0.1)] cursor-pointer ${minHeight}`}
+                >
+                  {/* Background Image with Parallax-like effect */}
+                  <div className="absolute inset-0 z-0">
                     <img 
                       src={project.imageUrl} 
                       alt={project.title} 
-                      className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                      className="h-full w-full object-cover opacity-50 transition-all duration-1000 group-hover:scale-110 group-hover:opacity-80 group-hover:rotate-1"
                     />
-                    <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(2,6,23,0.05)_0%,rgba(2,6,23,0.58)_66%,rgba(2,6,23,0.94)_100%)]" />
-                    <div className="absolute left-5 top-5 z-20 rounded-full border border-white/10 bg-black/40 px-3 py-1 text-xs font-mono text-cyan-200 backdrop-blur">
-                      {project.category}
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#020617] via-[#020617]/60 to-transparent" />
+                  </div>
+
+                  {/* Cyber Borders & Accents */}
+                  <div className="absolute inset-0 z-10 pointer-events-none">
+                    <div className="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-cyan-400/30 transition-all duration-500 group-hover:w-full group-hover:h-full group-hover:border-cyan-400/10" />
+                    <div className="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-rose-500/30 transition-all duration-500 group-hover:w-full group-hover:h-full group-hover:border-rose-500/10" />
+                  </div>
+
+                  {/* Project Content */}
+                  <div className={`relative z-20 flex h-full flex-col justify-end p-6 lg:p-10 ${isFullWidth ? 'lg:flex-row lg:items-end lg:justify-between' : ''}`}>
+                    <div className={isFullWidth ? 'lg:max-w-2xl' : ''}>
+                      <div className="mb-4 flex items-center gap-3">
+                        <span className="text-[10px] font-bold tracking-[0.3em] text-cyan-400 uppercase bg-cyan-400/10 px-3 py-1 border border-cyan-400/20">
+                          {project.category}
+                        </span>
+                        <span className="h-[1px] w-8 bg-white/20" />
+                        <span className="text-[10px] font-mono text-slate-500">ID: 0X{project.id.toUpperCase()}</span>
+                      </div>
+
+                      <h3 className={`font-bold text-white transition-all duration-500 group-hover:text-glow-cyan ${isFullWidth ? 'text-4xl md:text-6xl lg:text-7xl' : 'text-2xl md:text-3xl'}`}>
+                        {project.title}
+                      </h3>
+                      
+                      <p className={`mt-4 text-slate-400 leading-relaxed transition-all duration-500 group-hover:text-slate-200 ${isFullWidth ? 'text-lg max-w-xl' : 'text-sm line-clamp-3'}`}>
+                        {project.description}
+                      </p>
+
+                      <div className="mt-6 flex flex-wrap gap-2">
+                        {project.techStack.map((tech) => (
+                          <span key={tech} className="text-[9px] font-bold tracking-widest text-cyan-300/60 uppercase border-b border-cyan-400/0 transition-all hover:border-cyan-400/50 hover:text-cyan-300">
+                            {tech}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className={`mt-8 flex gap-6 ${isFullWidth ? 'lg:mt-0' : ''}`}>
+                      <div className="group/link flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.25em] text-white transition-all hover:text-cyan-400">
+                        <ExternalLink className="w-4 h-4 transition-transform group-hover/link:-translate-y-1 group-hover/link:translate-x-1" />
+                        Details
+                      </div>
+                      <div className="group/link flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.25em] text-slate-500 transition-all hover:text-white">
+                        <Github className="w-4 h-4 transition-transform group-hover/link:-translate-y-1" />
+                        Source
+                      </div>
                     </div>
                   </div>
 
-                  <div className={`absolute inset-x-0 bottom-0 z-20 p-6 ${featured ? 'md:p-8' : ''}`}>
-                    <h3 className={`font-bold text-white ${featured ? 'text-3xl md:text-4xl' : 'text-2xl'}`}>
-                      {project.title}
-                    </h3>
-                    <p className={`mt-3 max-w-2xl text-sm leading-7 text-slate-300 ${featured ? 'md:max-w-xl' : 'line-clamp-3'}`}>
-                      {project.description}
-                    </p>
-
-                    <div className="mt-5 flex flex-wrap gap-2">
-                      {project.techStack.map((tech) => (
-                        <span key={tech} className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-mono text-slate-300">
-                          {tech}
-                        </span>
-                      ))}
-                    </div>
-
-                    <div className="mt-6 flex gap-4">
-                      <button className="inline-flex items-center gap-2 text-sm font-bold text-white transition-colors hover:text-cyan-300">
-                        <ExternalLink className="w-4 h-4" /> Live Demo
-                      </button>
-                      <button className="inline-flex items-center gap-2 text-sm font-bold text-slate-400 transition-colors hover:text-white">
-                        <Github className="w-4 h-4" /> Code
-                      </button>
-                    </div>
+                  {/* Corner Scan Decoration */}
+                  <div className="absolute top-4 right-4 z-20 font-mono text-[8px] text-slate-600 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
+                    LAT: { (Math.random() * 90).toFixed(4) }<br/>
+                    LON: { (Math.random() * 180).toFixed(4) }<br/>
+                    STAT: ACTIVE
                   </div>
                 </div>
               </RevealOnScroll>
@@ -69,6 +119,11 @@ const Projects: React.FC = () => {
           })}
         </div>
       </div>
+
+      <ProjectModal 
+        project={selectedProject} 
+        onClose={() => setSelectedProject(null)} 
+      />
     </section>
   );
 };

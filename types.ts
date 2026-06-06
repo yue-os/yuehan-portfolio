@@ -25,6 +25,15 @@ export interface Service {
   color: 'cyan' | 'purple' | 'crimson';
 }
 
+export interface Experience {
+  id: string;
+  company: string;
+  role: string;
+  period: string;
+  description: string[];
+  skills: string[];
+}
+
 export interface SocialLink {
   platform: string;
   url: string;

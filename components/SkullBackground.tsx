@@ -1,10 +1,49 @@
 import React, { Suspense, useEffect, useMemo, useRef } from 'react';
-import { Canvas, useFrame, useLoader } from '@react-three/fiber';
-import { Float, Center } from '@react-three/drei';
+import { Canvas, useFrame, useLoader, useThree } from '@react-three/fiber';
+import { Float, Center, Stars, Sparkles, Points, PointMaterial } from '@react-three/drei';
 import * as THREE from 'three';
 import { OBJLoader, MTLLoader } from 'three-stdlib';
 
+const NeuralWeb: React.FC = () => {
+  const count = 400; // Drastically reduced for performance
+  const positions = useMemo(() => {
+    const pos = new Float32Array(count * 3);
+    for (let i = 0; i < count; i++) {
+      pos[i * 3] = (Math.random() - 0.5) * 40;
+      pos[i * 3 + 1] = (Math.random() - 0.5) * 40;
+      pos[i * 3 + 2] = (Math.random() - 0.5) * 40;
+    }
+    return pos;
+  }, []);
+
+  const pointsRef = useRef<THREE.Points>(null);
+
+  useFrame((state) => {
+    if (!pointsRef.current) return;
+    pointsRef.current.rotation.y = state.clock.getElapsedTime() * 0.02;
+    
+    // Smooth lerp with lower sensitivity
+    pointsRef.current.position.x = THREE.MathUtils.lerp(pointsRef.current.position.x, state.pointer.x * 1.2, 0.04);
+    pointsRef.current.position.y = THREE.MathUtils.lerp(pointsRef.current.position.y, state.pointer.y * 1.2, 0.04);
+  });
+
+  return (
+    <Points ref={pointsRef} positions={positions} stride={3} frustumCulled={false}>
+      <PointMaterial
+        transparent
+        color="#22d3ee"
+        size={0.06}
+        sizeAttenuation={true}
+        depthWrite={false}
+        blending={THREE.AdditiveBlending}
+        opacity={0.5}
+      />
+    </Points>
+  );
+};
+
 const MovingSkull: React.FC<{ scale: number }> = ({ scale }) => {
+  const { viewport } = useThree();
   const skullRef = useRef<THREE.Group>(null);
   const scrollY = useRef(0);
   const timer = useMemo(() => new (THREE as any).Timer(), []);
@@ -22,7 +61,6 @@ const MovingSkull: React.FC<{ scale: number }> = ({ scale }) => {
       if ((child as THREE.Mesh).isMesh) {
         const mesh = child as THREE.Mesh;
         mesh.castShadow = true;
-        mesh.receiveShadow = true;
       }
     });
   }, [skullModel]);
@@ -37,61 +75,68 @@ const MovingSkull: React.FC<{ scale: number }> = ({ scale }) => {
     const xPercent = Math.min(Math.max(scrollPercent, 0), 1);
 
     if (skullRef.current) {
-      // 1. Position: Moves vertically and stays on the right side
-      skullRef.current.position.y = THREE.MathUtils.lerp(3.5, -12, scrollPercent);
+      const targetX = (state.pointer.x * viewport.width) / 14;
+      const targetY = (state.pointer.y * viewport.height) / 14;
+      
+      skullRef.current.position.y = THREE.MathUtils.lerp(3.5, -12, scrollPercent) + targetY;
       if (xPercent < 0.33) {
-        skullRef.current.position.x = THREE.MathUtils.lerp(0, -4.4, xPercent / 0.33);
+        skullRef.current.position.x = THREE.MathUtils.lerp(0, -4.4, xPercent / 0.33) + targetX;
       } else if (xPercent < 0.66) {
-        skullRef.current.position.x = THREE.MathUtils.lerp(-4.4, 4.3, (xPercent - 0.33) / 0.33);
+        skullRef.current.position.x = THREE.MathUtils.lerp(-4.4, 4.3, (xPercent - 0.33) / 0.33) + targetX;
       } else {
-        skullRef.current.position.x = THREE.MathUtils.lerp(4.3, -4.0, (xPercent - 0.66) / 0.34);
+        skullRef.current.position.x = THREE.MathUtils.lerp(4.3, -4.0, (xPercent - 0.66) / 0.34) + targetX;
       }
-      skullRef.current.position.z = -5; // Keep it slightly back
+      skullRef.current.position.z = -5;
       
-      // 2. ALWAYS FACING ME:
-      // The camera position is where the user "is".
-      // We want the skull to track the user.
       const targetPos = new THREE.Vector3().copy(state.camera.position);
+      targetPos.x += state.pointer.x * 1.5;
+      targetPos.y += state.pointer.y * 1.5;
       
-      // Look at the camera but keep it upright
       skullRef.current.lookAt(targetPos);
-      
-      // Some models are exported facing the wrong way, we might need a 180 flip
-      // skullRef.current.rotateY(Math.PI); 
-      
-      // Add a slight "breathing" sway
-      skullRef.current.rotation.z += Math.sin(elapsed * 0.5) * 0.08;
+      skullRef.current.rotation.z += Math.sin(elapsed * 0.3) * 0.04;
     }
   });
 
   return (
-    <Float speed={1.8} rotationIntensity={0.3} floatIntensity={1}>
-      <Center top>
-        <group ref={skullRef} scale={scale} rotation={[0, Math.PI, 0]}>
-          <primitive object={skullModel} />
-        </group>
-      </Center>
-    </Float>
+    <group>
+      <NeuralWeb />
+      <Sparkles count={20} scale={15} size={1.2} speed={0.2} color="#dc2626" opacity={0.3} />
+      <Sparkles count={20} scale={15} size={1.2} speed={0.2} color="#22d3ee" opacity={0.3} />
+      
+      <Float speed={2} rotationIntensity={0.4} floatIntensity={1.5}>
+        <Center top>
+          <group ref={skullRef} scale={scale} rotation={[0, Math.PI, 0]}>
+            <primitive object={skullModel} />
+          </group>
+        </Center>
+      </Float>
+    </group>
   );
 };
 
 const SkullBackground: React.FC<{ scale?: number }> = ({ scale = .50 }) => {
   return (
-    <div className="fixed inset-0 z-[-1] pointer-events-none bg-[#050505]">
-      <Canvas camera={{ position: [0, 0, 12], fov: 40 }}>
-        <ambientLight intensity={1.2} />
-        <directionalLight position={[4, 8, 8]} intensity={3.5} color="#fff7ea" castShadow />
-        <pointLight position={[10, 10, 10]} intensity={3.5} color="#dc2626" />
-        <pointLight position={[-10, -10, 10]} intensity={2} color="#ffffff" />
-        <spotLight position={[0, 10, 10]} angle={0.4} penumbra={1} intensity={2.5} color="#dc2626" castShadow />
+    <div className="fixed inset-0 z-[-1] pointer-events-none bg-[#010208]">
+      <Canvas 
+        camera={{ position: [0, 0, 12], fov: 40 }} 
+        dpr={1} 
+        gl={{ powerPreference: "high-performance", antialias: false, alpha: true }}
+      >
+        <fog attach="fog" args={['#010208', 10, 30]} />
+        <ambientLight intensity={0.4} />
+        
+        {/* Optimized Starfield */}
+        <Stars radius={100} depth={50} count={2000} factor={4} saturation={0} fade speed={1} />
+        
+        <directionalLight position={[4, 8, 8]} intensity={1.5} color="#fff7ea" />
+        <pointLight position={[10, 10, 10]} intensity={3} color="#dc2626" />
+        <pointLight position={[-10, -10, 10]} intensity={2} color="#22d3ee" />
+        <spotLight position={[0, 15, 10]} angle={0.5} penumbra={1} intensity={5} color="#dc2626" />
 
         <Suspense fallback={null}>
           <MovingSkull scale={scale} />
         </Suspense>
       </Canvas>
-      
-      {/* Intense Red Team atmosphere vignette */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.85)_100%)]" />
     </div>
   );
 };
