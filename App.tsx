@@ -17,15 +17,37 @@ function App() {
   const mouseGlowRef = useRef<HTMLDivElement>(null);
   const [viewMode, setViewMode] = useState<ViewMode>('arsenal');
   const [isGlitching, setIsGlitching] = useState(false);
+  const pendingScrollTarget = useRef<string | null>(null);
 
-  const handleModeChange = (mode: ViewMode) => {
-    if (mode === viewMode) return;
+  const handleModeChange = (mode: ViewMode, targetId?: string) => {
+    if (targetId) pendingScrollTarget.current = targetId;
+    
+    if (mode === viewMode) {
+      // If already in the right mode, just scroll
+      if (targetId) {
+        document.getElementById(targetId)?.scrollIntoView({ behavior: 'smooth' });
+      }
+      return;
+    }
+
     setIsGlitching(true);
     setTimeout(() => {
       setViewMode(mode);
       setIsGlitching(false);
     }, 300);
   };
+
+  // Handle scroll after mode change and glitch finish
+  useEffect(() => {
+    if (!isGlitching && pendingScrollTarget.current) {
+      const targetId = pendingScrollTarget.current;
+      // Small delay to ensure DOM is ready
+      setTimeout(() => {
+        document.getElementById(targetId)?.scrollIntoView({ behavior: 'smooth' });
+        pendingScrollTarget.current = null;
+      }, 50);
+    }
+  }, [isGlitching, viewMode]);
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {

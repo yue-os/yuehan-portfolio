@@ -211,6 +211,22 @@ body::before {
   .text-glow-red {
     text-shadow: 0 0 15px rgba(220, 38, 38, 0.7);
   }
+
+  /* Cyber Glitch Effect */
+  @keyframes cyber-glitch {
+    0% { transform: translate(2px, 0); opacity: 0.8; }
+    20% { transform: translate(-2px, -2px); opacity: 0.5; filter: hue-rotate(90deg); }
+    40% { transform: translate(2px, 2px); opacity: 0.7; filter: contrast(200%); }
+    60% { transform: translate(-2px, 0); opacity: 0.6; filter: blur(1px); }
+    80% { transform: translate(2px, -2px); opacity: 0.8; }
+    100% { transform: translate(0, 0); opacity: 1; }
+  }
+
+  .glitch-active {
+    animation: cyber-glitch 0.1s steps(2) infinite;
+    pointer-events: none;
+    user-select: none;
+  }
 }
 
 /* Scrollbar Styling */

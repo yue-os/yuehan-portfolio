@@ -3,7 +3,13 @@ import { Menu, X, Terminal } from 'lucide-react';
 import { ViewMode } from '../types';
 
 interface NavbarProps {
-  onModeChange?: (mode: ViewMode) => void;
+  onModeChange?: (mode: ViewMode, targetId?: string) => void;
+}
+
+interface NavLink {
+  name: string;
+  href: string;
+  mode?: ViewMode;
 }
 
 const Navbar: React.FC<NavbarProps> = ({ onModeChange }) => {
@@ -18,26 +24,19 @@ const Navbar: React.FC<NavbarProps> = ({ onModeChange }) => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const navLinks = [
-    { name: 'Arsenal', href: '#projects', mode: 'arsenal' as ViewMode },
+  const navLinks: NavLink[] = [
+    { name: 'Arsenal', href: '#projects', mode: 'arsenal' },
     { name: 'Services', href: '#services' },
-    { name: 'Experience', href: '#experience', mode: 'logs' as ViewMode },
+    { name: 'Experience', href: '#experience', mode: 'logs' },
     { name: 'Tech', href: '#tech' },
     { name: 'Contact', href: '#contact' },
   ];
 
-  const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>, link: typeof navLinks[0]) => {
+  const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>, link: NavLink) => {
+    const targetId = link.href.replace('#', '');
     if (link.mode && onModeChange) {
       e.preventDefault();
-      onModeChange(link.mode);
-      
-      // Still scroll to the section if needed, but since we're switching modes,
-      // the content might change. Projects and Experience are in the same relative position.
-      const targetId = link.href.replace('#', '');
-      const element = document.getElementById(targetId);
-      if (element) {
-        element.scrollIntoView({ behavior: 'smooth' });
-      }
+      onModeChange(link.mode, targetId);
     }
     if (isMobileOpen) setIsMobileOpen(false);
   };
