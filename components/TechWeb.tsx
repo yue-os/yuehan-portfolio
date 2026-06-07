@@ -48,8 +48,10 @@ const TechNode: React.FC<TechNodeProps> = ({ name, icon, position, color, catego
       <Sphere args={[0.3, 16, 16]} scale={isHovered ? 1.4 : 1}>
         <meshStandardMaterial 
           color={isHovered ? "#ffffff" : color} 
-          emissive={color}
+          emissive={isHovered ? "#ffffff" : color}
           emissiveIntensity={isHovered ? 2 : 0.5}
+          metalness={0.8}
+          roughness={0.2}
         />
       </Sphere>
       
