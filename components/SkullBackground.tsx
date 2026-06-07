@@ -3,8 +3,9 @@ import { Canvas, useFrame, useLoader, useThree } from '@react-three/fiber';
 import { Float, Center, Stars, Sparkles, Points, PointMaterial } from '@react-three/drei';
 import * as THREE from 'three';
 import { OBJLoader, MTLLoader } from 'three-stdlib';
+import { ViewMode } from '../types';
 
-const NeuralWeb: React.FC = () => {
+const NeuralWeb: React.FC<{ mode: ViewMode }> = ({ mode }) => {
   const count = 400; // Drastically reduced for performance
   const positions = useMemo(() => {
     const pos = new Float32Array(count * 3);
@@ -31,7 +32,7 @@ const NeuralWeb: React.FC = () => {
     <Points ref={pointsRef} positions={positions} stride={3} frustumCulled={false}>
       <PointMaterial
         transparent
-        color="#22d3ee"
+        color={mode === 'arsenal' ? '#22d3ee' : '#3b82f6'}
         size={0.06}
         sizeAttenuation={true}
         depthWrite={false}
@@ -42,14 +43,20 @@ const NeuralWeb: React.FC = () => {
   );
 };
 
-const MovingSkull: React.FC<{ scale: number }> = ({ scale }) => {
+const MovingSkull: React.FC<{ scale: number; mode: ViewMode }> = ({ scale, mode }) => {
   const { viewport } = useThree();
   const skullRef = useRef<THREE.Group>(null);
   const leftEyeLightRef = useRef<THREE.PointLight>(null);
   const rightEyeLightRef = useRef<THREE.PointLight>(null);
   const scrollY = useRef(0);
-  const timer = useMemo(() => new (THREE as any).Timer(), []);
+  
+  const eyeColor = mode === 'arsenal' ? '#22d3ee' : '#3b82f6';
+  const pulseSpeed = mode === 'arsenal' ? 2 : 1;
+  
+  // Reusable vectors for performance
   const lookTarget = useRef(new THREE.Vector3(0, 0, 12));
+  const tempTargetPos = useRef(new THREE.Vector3());
+  
   const skullObjUrl = useMemo(() => new URL('../assets/skull/skull.obj', import.meta.url).href, []);
   const skullMtlUrl = useMemo(() => new URL('../assets/skull/skull.mtl', import.meta.url).href, []);
 
@@ -73,11 +80,10 @@ const MovingSkull: React.FC<{ scale: number }> = ({ scale }) => {
   }, [skullModel]);
 
   useFrame((state) => {
-    timer.update();
-    const elapsed = timer.getElapsed();
+    const elapsed = state.clock.getElapsedTime();
 
     // Breathing flicker for eyes
-    const eyePulse = 1.5 + Math.sin(state.clock.elapsedTime * 2) * 0.5;
+    const eyePulse = 1.5 + Math.sin(elapsed * pulseSpeed) * 0.5;
     if (leftEyeLightRef.current) leftEyeLightRef.current.intensity = eyePulse;
     if (rightEyeLightRef.current) rightEyeLightRef.current.intensity = eyePulse;
 
@@ -106,52 +112,59 @@ const MovingSkull: React.FC<{ scale: number }> = ({ scale }) => {
       skullRef.current.position.y = THREE.MathUtils.lerp(skullRef.current.position.y, calculatedY + targetY, lerpFactor);
       skullRef.current.position.z = -5;
       
-      const targetPos = new THREE.Vector3().copy(state.camera.position);
-      targetPos.x += state.pointer.x * 2;
-      targetPos.y += state.pointer.y * 2;
+      // Calculate target position in front of camera
+      tempTargetPos.current.set(
+        state.pointer.x * viewport.width,
+        state.pointer.y * viewport.height,
+        15 // Far enough in front to track well
+      );
       
       // Smooth Gaze tracking
-      lookTarget.current.lerp(targetPos, lerpFactor);
+      lookTarget.current.lerp(tempTargetPos.current, lerpFactor);
       skullRef.current.lookAt(lookTarget.current);
+      
+      // Add subtle idle wobble
       skullRef.current.rotation.z += Math.sin(elapsed * 0.3) * 0.04;
     }
   });
 
   return (
     <group>
-      <NeuralWeb />
-      <Sparkles count={15} scale={15} size={1} speed={0.1} color="#22d3ee" opacity={0.2} />
+      <NeuralWeb mode={mode} />
+      <Sparkles count={15} scale={15} size={1} speed={0.1} color={eyeColor} opacity={0.2} />
       
       <Float speed={2} rotationIntensity={0.4} floatIntensity={1.5}>
         <Center top>
-          <group ref={skullRef} scale={scale} rotation={[0, Math.PI, 0]}>
-            <primitive object={skullModel} />
-            
-            {/* Left Eye */}
-            <mesh position={[-0.35, 0.4, 0.5]}>
-              <sphereGeometry args={[0.08, 16, 16]} />
-              <meshStandardMaterial 
-                emissive="#22d3ee" 
-                emissiveIntensity={2} 
-                color="#22d3ee"
-                transparent
-                opacity={0.8}
-              />
-              <pointLight ref={leftEyeLightRef} intensity={1.5} distance={3} color="#22d3ee" />
-            </mesh>
+          <group ref={skullRef} scale={scale}>
+            <group rotation={[0, Math.PI, 0]}>
+              <primitive object={skullModel} />
+              
+              {/* Left Eye */}
+              <mesh position={[-0.35, 0.4, 0.5]}>
+                <sphereGeometry args={[0.08, 16, 16]} />
+                <meshStandardMaterial 
+                  emissive={eyeColor} 
+                  emissiveIntensity={2} 
+                  color={eyeColor}
+                  transparent
+                  opacity={0.8}
+                />
+                <pointLight ref={leftEyeLightRef} intensity={1.5} distance={3} color={eyeColor} />
+              </mesh>
 
-            {/* Right Eye */}
-            <mesh position={[0.35, 0.4, 0.5]}>
-              <sphereGeometry args={[0.08, 16, 16]} />
-              <meshStandardMaterial 
-                emissive="#22d3ee" 
-                emissiveIntensity={2} 
-                color="#22d3ee"
-                transparent
-                opacity={0.8}
-              />
-              <pointLight ref={rightEyeLightRef} intensity={1.5} distance={3} color="#22d3ee" />
-            </mesh>
+              {/* Right Eye */}
+              <mesh position={[0.35, 0.4, 0.5]}>
+                <sphereGeometry args={[0.08, 16, 16]} />
+                <meshStandardMaterial 
+                  emissive={eyeColor} 
+                  emissiveIntensity={2} 
+                  color={eyeColor}
+                  transparent
+                  opacity={0.8}
+                />
+                <pointLight ref={rightEyeLightRef} intensity={1.5} distance={3} color={eyeColor} />
+              </mesh>
+            </group>
           </group>
         </Center>
       </Float>
@@ -159,7 +172,7 @@ const MovingSkull: React.FC<{ scale: number }> = ({ scale }) => {
   );
 };
 
-const SkullBackground: React.FC<{ scale?: number }> = ({ scale = .50 }) => {
+const SkullBackground: React.FC<{ scale?: number; mode?: ViewMode }> = ({ scale = .50, mode = 'arsenal' }) => {
   return (
     <div className="fixed inset-0 z-[-1] pointer-events-none bg-[#010208]">
       <Canvas 
@@ -174,7 +187,7 @@ const SkullBackground: React.FC<{ scale?: number }> = ({ scale = .50 }) => {
         <Stars radius={100} depth={50} count={1000} factor={4} saturation={0} fade speed={0.5} />
 
         <Suspense fallback={null}>
-          <MovingSkull scale={scale} />
+          <MovingSkull scale={scale} mode={mode} />
         </Suspense>
       </Canvas>
     </div>
