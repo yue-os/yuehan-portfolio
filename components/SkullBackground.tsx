@@ -120,8 +120,7 @@ const MovingSkull: React.FC<{ scale: number }> = ({ scale }) => {
   return (
     <group>
       <NeuralWeb />
-      <Sparkles count={20} scale={15} size={1.2} speed={0.2} color="#dc2626" opacity={0.3} />
-      <Sparkles count={20} scale={15} size={1.2} speed={0.2} color="#22d3ee" opacity={0.3} />
+      <Sparkles count={15} scale={15} size={1} speed={0.1} color="#22d3ee" opacity={0.2} />
       
       <Float speed={2} rotationIntensity={0.4} floatIntensity={1.5}>
         <Center top>
