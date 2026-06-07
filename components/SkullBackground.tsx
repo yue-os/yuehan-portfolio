@@ -45,6 +45,8 @@ const NeuralWeb: React.FC = () => {
 const MovingSkull: React.FC<{ scale: number }> = ({ scale }) => {
   const { viewport } = useThree();
   const skullRef = useRef<THREE.Group>(null);
+  const leftEyeLightRef = useRef<THREE.PointLight>(null);
+  const rightEyeLightRef = useRef<THREE.PointLight>(null);
   const scrollY = useRef(0);
   const timer = useMemo(() => new (THREE as any).Timer(), []);
   const skullObjUrl = useMemo(() => new URL('../assets/skull/skull.obj', import.meta.url).href, []);
@@ -72,6 +74,11 @@ const MovingSkull: React.FC<{ scale: number }> = ({ scale }) => {
   useFrame((state) => {
     timer.update();
     const elapsed = timer.getElapsed();
+
+    // Breathing flicker for eyes
+    const eyePulse = 1.5 + Math.sin(state.clock.elapsedTime * 2) * 0.5;
+    if (leftEyeLightRef.current) leftEyeLightRef.current.intensity = eyePulse;
+    if (rightEyeLightRef.current) rightEyeLightRef.current.intensity = eyePulse;
 
     scrollY.current = window.scrollY;
     const pageHeight = document.documentElement.scrollHeight - window.innerHeight;
@@ -111,6 +118,32 @@ const MovingSkull: React.FC<{ scale: number }> = ({ scale }) => {
         <Center top>
           <group ref={skullRef} scale={scale} rotation={[0, Math.PI, 0]}>
             <primitive object={skullModel} />
+            
+            {/* Left Eye */}
+            <mesh position={[-0.35, 0.4, 0.5]}>
+              <sphereGeometry args={[0.08, 16, 16]} />
+              <meshStandardMaterial 
+                emissive="#22d3ee" 
+                emissiveIntensity={2} 
+                color="#22d3ee"
+                transparent
+                opacity={0.8}
+              />
+              <pointLight ref={leftEyeLightRef} intensity={1.5} distance={3} color="#22d3ee" />
+            </mesh>
+
+            {/* Right Eye */}
+            <mesh position={[0.35, 0.4, 0.5]}>
+              <sphereGeometry args={[0.08, 16, 16]} />
+              <meshStandardMaterial 
+                emissive="#22d3ee" 
+                emissiveIntensity={2} 
+                color="#22d3ee"
+                transparent
+                opacity={0.8}
+              />
+              <pointLight ref={rightEyeLightRef} intensity={1.5} distance={3} color="#22d3ee" />
+            </mesh>
           </group>
         </Center>
       </Float>
