@@ -1,6 +1,6 @@
-import React, { useMemo, useRef } from 'react';
-import { Canvas, useFrame } from '@react-three/fiber';
-import { OrbitControls, Text, Float, Sphere, MeshDistortMaterial, PerspectiveCamera } from '@react-three/drei';
+import React, { useMemo } from 'react';
+import { Canvas } from '@react-three/fiber';
+import { OrbitControls, Text, Float, Sphere, MeshDistortMaterial, PerspectiveCamera, Segments, Segment } from '@react-three/drei';
 import * as THREE from 'three';
 import { TECH_STACK } from '../constants';
 
@@ -26,47 +26,45 @@ interface TechNodeProps {
 }
 
 const TechNode: React.FC<TechNodeProps> = ({ name, icon, position, color }) => {
-  const meshRef = useRef<THREE.Mesh>(null);
-
   return (
-    <Float speed={1.5} rotationIntensity={0.5} floatIntensity={0.5}>
-      <group position={position}>
-        <Sphere args={[0.3, 32, 32]} ref={meshRef}>
-          <MeshDistortMaterial
-            color={color}
-            speed={2}
-            distort={0.3}
-            radius={1}
-            emissive={color}
-            emissiveIntensity={0.5}
-          />
-        </Sphere>
-        <Text
-          position={[0, -0.6, 0]}
-          fontSize={0.25}
-          color="white"
-          anchorX="center"
-          anchorY="top"
-        >
-          {name}
-        </Text>
-        <Text
-          position={[0, 0, 0.4]}
-          fontSize={0.4}
-          anchorX="center"
-          anchorY="middle"
-        >
-          {icon}
-        </Text>
-      </group>
-    </Float>
+    <group position={position}>
+      <Sphere args={[0.3, 32, 32]}>
+        <MeshDistortMaterial
+          color={color}
+          speed={2}
+          distort={0.3}
+          radius={1}
+          emissive={color}
+          emissiveIntensity={0.5}
+        />
+      </Sphere>
+      <Text
+        position={[0, -0.6, 0]}
+        fontSize={0.25}
+        color="white"
+        anchorX="center"
+        anchorY="top"
+      >
+        {name}
+      </Text>
+      <Text
+        position={[0, 0, 0.4]}
+        fontSize={0.4}
+        anchorX="center"
+        anchorY="middle"
+      >
+        {icon}
+      </Text>
+    </group>
   );
 };
 
-const TechNodes = () => {
-  const nodes = useMemo(() => {
-    const allNodes: React.ReactElement[] = [];
+const TechNodesAndConnections = () => {
+  const { nodes, connections } = useMemo(() => {
+    const posMap: Record<string, [number, number, number]> = {};
+    const nodeElements: React.ReactElement[] = [];
     
+    // 1. Calculate positions and create nodes
     TECH_STACK.forEach((category) => {
       const center = CATEGORY_CENTERS[category.category] || [0, 0, 0];
       const color = CATEGORY_COLORS[category.category] || "#ffffff";
@@ -81,7 +79,9 @@ const TechNodes = () => {
         const y = center[1] + spread * Math.sin(phi) * Math.sin(theta);
         const z = center[2] + spread * Math.cos(phi);
         
-        allNodes.push(
+        posMap[item.name] = [x, y, z];
+        
+        nodeElements.push(
           <TechNode
             key={`${category.category}-${item.name}`}
             name={item.name}
@@ -92,11 +92,69 @@ const TechNodes = () => {
         );
       });
     });
+
+    // 2. Define connections
+    const lineSegments: { start: [number, number, number], end: [number, number, number], color: string }[] = [];
     
-    return allNodes;
+    // Intra-category connections
+    TECH_STACK.forEach((category) => {
+      const color = CATEGORY_COLORS[category.category] || "#ffffff";
+      category.items.forEach((item, index) => {
+        const nextItem = category.items[(index + 1) % category.items.length];
+        if (posMap[item.name] && posMap[nextItem.name]) {
+          lineSegments.push({
+            start: posMap[item.name],
+            end: posMap[nextItem.name],
+            color: color
+          });
+        }
+      });
+    });
+
+    // Cross-category connections (Neural links)
+    const crossConnections = [
+      ["Python", "FastAPI"],
+      ["Python", "Kali Linux"],
+      ["C#", "Unity"],
+      ["C#", "ASP.NET"],
+      ["TypeScript", "React"],
+      ["Next.js", "React"],
+      ["Node.js", "Docker"],
+      ["PostgreSQL", "Supabase"],
+      ["FastAPI", "Supabase"],
+      ["React", "FastAPI"],
+    ];
+
+    crossConnections.forEach(([from, to]) => {
+      if (posMap[from] && posMap[to]) {
+        lineSegments.push({
+          start: posMap[from],
+          end: posMap[to],
+          color: "#22d3ee" // Default neural cyan
+        });
+      }
+    });
+
+    return { nodes: nodeElements, connections: lineSegments };
   }, []);
 
-  return <>{nodes}</>;
+  return (
+    <Float speed={1} rotationIntensity={0.2} floatIntensity={0.5}>
+      <group>
+        {nodes}
+        <Segments limit={100} lineWidth={1} transparent opacity={0.4}>
+          {connections.map((conn, i) => (
+            <Segment 
+              key={i} 
+              start={new THREE.Vector3(...conn.start)} 
+              end={new THREE.Vector3(...conn.end)} 
+              color={conn.color} 
+            />
+          ))}
+        </Segments>
+      </group>
+    </Float>
+  );
 };
 
 const TechWeb: React.FC = () => {
@@ -108,7 +166,7 @@ const TechWeb: React.FC = () => {
         <pointLight position={[10, 10, 10]} intensity={1} color="#22d3ee" />
         <pointLight position={[-10, -10, -10]} intensity={0.5} color="#f43f5e" />
         
-        <TechNodes />
+        <TechNodesAndConnections />
         
         <OrbitControls 
           enableZoom={false} 
