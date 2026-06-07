@@ -45,7 +45,7 @@ function App() {
 
       {/* Tier 3: Cyber-Space Infrastructure */}
       <div className="fixed inset-0 z-[-1] overflow-hidden pointer-events-none bg-[#010208]">
-        <SkullBackground />
+        <SkullBackground mode={viewMode} />
         <div className="cyber-grid" />
         <div className="horizon" />
         <div 
