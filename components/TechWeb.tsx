@@ -1,6 +1,6 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Canvas } from '@react-three/fiber';
-import { OrbitControls, Text, Float, Sphere, MeshDistortMaterial, PerspectiveCamera, Segments, Segment } from '@react-three/drei';
+import { OrbitControls, Text, Float, Sphere, MeshDistortMaterial, PerspectiveCamera, Segments, Segment, Billboard, Sparkles } from '@react-three/drei';
 import * as THREE from 'three';
 import { TECH_STACK } from '../constants';
 
@@ -23,48 +23,61 @@ interface TechNodeProps {
   icon: string;
   position: [number, number, number];
   color: string;
+  isHovered: boolean;
+  onHover: (name: string | null) => void;
 }
 
-const TechNode: React.FC<TechNodeProps> = ({ name, icon, position, color }) => {
+const TechNode: React.FC<TechNodeProps> = ({ name, icon, position, color, isHovered, onHover }) => {
   return (
-    <group position={position}>
-      <Sphere args={[0.3, 32, 32]}>
+    <group 
+      position={position}
+      onPointerOver={(e) => {
+        e.stopPropagation();
+        onHover(name);
+      }}
+      onPointerOut={() => onHover(null)}
+    >
+      <Sphere args={[0.3, 32, 32]} scale={isHovered ? 1.4 : 1}>
         <MeshDistortMaterial
           color={color}
-          speed={2}
-          distort={0.3}
+          speed={isHovered ? 4 : 2}
+          distort={isHovered ? 0.5 : 0.3}
           radius={1}
           emissive={color}
-          emissiveIntensity={0.5}
+          emissiveIntensity={isHovered ? 2 : 0.5}
         />
       </Sphere>
-      <Text
-        position={[0, -0.6, 0]}
-        fontSize={0.25}
-        color="white"
-        anchorX="center"
-        anchorY="top"
-      >
-        {name}
-      </Text>
-      <Text
-        position={[0, 0, 0.4]}
-        fontSize={0.4}
-        anchorX="center"
-        anchorY="middle"
-      >
-        {icon}
-      </Text>
+      <Billboard>
+        <Text
+          position={[0, -0.6, 0]}
+          fontSize={0.25}
+          color="white"
+          anchorX="center"
+          anchorY="top"
+        >
+          {name}
+        </Text>
+        <Text
+          position={[0, 0, 0.4]}
+          fontSize={0.4}
+          anchorX="center"
+          anchorY="middle"
+        >
+          {icon}
+        </Text>
+      </Billboard>
     </group>
   );
 };
 
 const TechNodesAndConnections = () => {
-  const { nodes, connections } = useMemo(() => {
+  const [hoveredNode, setHoveredNode] = useState<string | null>(null);
+
+  const { nodeData, connections } = useMemo(() => {
     const posMap: Record<string, [number, number, number]> = {};
-    const nodeElements: React.ReactElement[] = [];
+    const nodes: { name: string, icon: string, position: [number, number, number], color: string }[] = [];
     
-    // 1. Calculate positions and create nodes
+    // 1. Calculate positions and create node data
     TECH_STACK.forEach((category) => {
       const center = CATEGORY_CENTERS[category.category] || [0, 0, 0];
       const color = CATEGORY_COLORS[category.category] || "#ffffff";
@@ -81,20 +94,17 @@ const TechNodesAndConnections = () => {
         
         posMap[item.name] = [x, y, z];
         
-        nodeElements.push(
-          <TechNode
-            key={`${category.category}-${item.name}`}
-            name={item.name}
-            icon={item.icon}
-            position={[x, y, z]}
-            color={color}
-          />
-        );
+        nodes.push({
+          name: item.name,
+          icon: item.icon,
+          position: [x, y, z],
+          color: color,
+        });
       });
     });
 
     // 2. Define connections
-    const lineSegments: { start: [number, number, number], end: [number, number, number], color: string }[] = [];
+    const lineSegments: { start: [number, number, number], end: [number, number, number], color: string, from: string, to: string }[] = [];
     
     // Intra-category connections
     TECH_STACK.forEach((category) => {
@@ -105,7 +115,9 @@ const TechNodesAndConnections = () => {
           lineSegments.push({
             start: posMap[item.name],
             end: posMap[nextItem.name],
-            color: color
+            color: color,
+            from: item.name,
+            to: nextItem.name
           });
         }
       });
@@ -130,27 +142,39 @@ const TechNodesAndConnections = () => {
         lineSegments.push({
           start: posMap[from],
           end: posMap[to],
-          color: "#22d3ee" // Default neural cyan
+          color: "#22d3ee", // Default neural cyan
+          from,
+          to
         });
       }
     });
 
-    return { nodes: nodeElements, connections: lineSegments };
+    return { nodeData: nodes, connections: lineSegments };
   }, []);
 
   return (
     <Float speed={1} rotationIntensity={0.2} floatIntensity={0.5}>
       <group>
-        {nodes}
-        <Segments limit={100} lineWidth={1} transparent opacity={0.4}>
-          {connections.map((conn, i) => (
-            <Segment 
-              key={i} 
-              start={new THREE.Vector3(...conn.start)} 
-              end={new THREE.Vector3(...conn.end)} 
-              color={conn.color} 
-            />
-          ))}
+        {nodeData.map((node) => (
+          <TechNode
+            key={`${node.name}`}
+            {...node}
+            isHovered={hoveredNode === node.name}
+            onHover={setHoveredNode}
+          />
+        ))}
+        <Segments limit={200} lineWidth={1} transparent opacity={0.6}>
+          {connections.map((conn, i) => {
+            const isHighlighted = hoveredNode === conn.from || hoveredNode === conn.to;
+            return (
+              <Segment 
+                key={i} 
+                start={new THREE.Vector3(...conn.start)} 
+                end={new THREE.Vector3(...conn.end)} 
+                color={isHighlighted ? "#ffffff" : conn.color}
+              />
+            );
+          })}
         </Segments>
       </group>
     </Float>
@@ -165,6 +189,8 @@ const TechWeb: React.FC = () => {
         <ambientLight intensity={0.5} />
         <pointLight position={[10, 10, 10]} intensity={1} color="#22d3ee" />
         <pointLight position={[-10, -10, -10]} intensity={0.5} color="#f43f5e" />
+        
+        <Sparkles count={200} scale={20} size={2} speed={0.4} opacity={0.2} color="#22d3ee" />
         
         <TechNodesAndConnections />
         
