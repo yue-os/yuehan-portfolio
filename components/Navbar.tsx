@@ -1,7 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Menu, X, Terminal } from 'lucide-react';
+import { ViewMode } from '../types';
 
-const Navbar: React.FC = () => {
+interface NavbarProps {
+  onModeChange?: (mode: ViewMode) => void;
+}
+
+const Navbar: React.FC<NavbarProps> = ({ onModeChange }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
 
@@ -14,12 +19,28 @@ const Navbar: React.FC = () => {
   }, []);
 
   const navLinks = [
-    { name: 'Arsenal', href: '#projects' },
+    { name: 'Arsenal', href: '#projects', mode: 'arsenal' as ViewMode },
     { name: 'Services', href: '#services' },
-    { name: 'Experience', href: '#experience' },
+    { name: 'Experience', href: '#experience', mode: 'logs' as ViewMode },
     { name: 'Tech', href: '#tech' },
     { name: 'Contact', href: '#contact' },
   ];
+
+  const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>, link: typeof navLinks[0]) => {
+    if (link.mode && onModeChange) {
+      e.preventDefault();
+      onModeChange(link.mode);
+      
+      // Still scroll to the section if needed, but since we're switching modes,
+      // the content might change. Projects and Experience are in the same relative position.
+      const targetId = link.href.replace('#', '');
+      const element = document.getElementById(targetId);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+    if (isMobileOpen) setIsMobileOpen(false);
+  };
 
   return (
     <nav 
@@ -46,6 +67,7 @@ const Navbar: React.FC = () => {
               <a
                 key={link.name}
                 href={link.href}
+                onClick={(e) => handleLinkClick(e, link)}
                 className="px-4 py-1 text-[9px] font-black uppercase tracking-[0.3em] text-slate-500 transition-all hover:text-cyan-300 relative group/nav"
               >
                 {link.name}
@@ -86,7 +108,7 @@ const Navbar: React.FC = () => {
               <a
                 key={link.name}
                 href={link.href}
-                onClick={() => setIsMobileOpen(false)}
+                onClick={(e) => handleLinkClick(e, link)}
                 className="block rounded-xl px-4 py-3 text-sm font-medium text-slate-300 transition-colors hover:bg-white/10 hover:text-white"
               >
                 {link.name}

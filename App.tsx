@@ -10,6 +10,7 @@ import Footer from './components/Footer';
 import CustomCursor from './components/CustomCursor';
 import SkullBackground from './components/SkullBackground';
 import SidebarHUD from './components/SidebarHUD';
+import ViewModeSelector from './components/ViewModeSelector';
 import { ViewMode } from './types';
 
 function App() {
@@ -62,7 +63,7 @@ function App() {
         <CustomCursor />
       </div>
 
-      <Navbar />
+      <Navbar onModeChange={handleModeChange} />
       
       <main className={`relative z-10 ${isGlitching ? 'glitch-active' : ''}`}>
         <Hero />
@@ -71,6 +72,8 @@ function App() {
         {viewMode === 'logs' ? <Experience /> : <Projects />}
         <TechStack />
       </main>
+
+      <ViewModeSelector currentMode={viewMode} onModeChange={handleModeChange} />
 
       <Footer />
     </div>
