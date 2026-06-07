@@ -284,3 +284,12 @@ body::before {
 .animate-crt-flash {
   animation: crt-flash 0.5s ease-out forwards;
 }
+
+@layer utilities {
+  .perspective-\[1000px\] {
+    perspective: 1000px;
+  }
+  .preserve-3d {
+    transform-style: preserve-3d;
+  }
+}
