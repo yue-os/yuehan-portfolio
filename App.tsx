@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import Stats from './components/Stats';
@@ -11,8 +11,21 @@ import CustomCursor from './components/CustomCursor';
 import SkullBackground from './components/SkullBackground';
 import SidebarHUD from './components/SidebarHUD';
 
+type ViewMode = 'arsenal' | 'logs';
+
 function App() {
   const mouseGlowRef = useRef<HTMLDivElement>(null);
+  const [viewMode, setViewMode] = useState<ViewMode>('arsenal');
+  const [isGlitching, setIsGlitching] = useState(false);
+
+  const handleModeChange = (mode: ViewMode) => {
+    if (mode === viewMode) return;
+    setIsGlitching(true);
+    setTimeout(() => {
+      setViewMode(mode);
+      setIsGlitching(false);
+    }, 300);
+  };
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
@@ -52,12 +65,11 @@ function App() {
 
       <Navbar />
       
-      <main className="relative z-10">
+      <main className={`relative z-10 ${isGlitching ? 'glitch-active' : ''}`}>
         <Hero />
         <Stats />
         <Services />
-        <Experience />
-        <Projects />
+        {viewMode === 'logs' ? <Experience /> : <Projects />}
         <TechStack />
       </main>
 
