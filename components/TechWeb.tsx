@@ -1,5 +1,5 @@
-import React, { useMemo, useState } from 'react';
-import { Canvas } from '@react-three/fiber';
+import React, { useMemo, useState, useRef } from 'react';
+import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, PerspectiveCamera, Sphere, Html, Float, Line, Sparkles } from '@react-three/drei';
 import * as THREE from 'three';
 import { TECH_STACK } from '../constants';
@@ -36,6 +36,28 @@ interface TechNodeProps {
 }
 
 const TechNode: React.FC<TechNodeProps> = ({ name, icon, position, color, category, isHovered, onHover }) => {
+  const meshRef = useRef<THREE.Mesh>(null);
+  const materialRef = useRef<THREE.MeshStandardMaterial>(null);
+
+  useFrame((state) => {
+    if (meshRef.current && materialRef.current) {
+      if (isHovered) {
+        // Continuous pulse when hovered
+        const pulse = Math.sin(state.clock.elapsedTime * 8) * 0.2;
+        meshRef.current.scale.setScalar(1.4 + pulse);
+        materialRef.current.emissiveIntensity = 2 + pulse * 2;
+        materialRef.current.color.set("#ffffff");
+        materialRef.current.emissive.set("#ffffff");
+      } else {
+        // Return to normal
+        meshRef.current.scale.setScalar(THREE.MathUtils.lerp(meshRef.current.scale.x, 1, 0.1));
+        materialRef.current.emissiveIntensity = THREE.MathUtils.lerp(materialRef.current.emissiveIntensity, 0.5, 0.1);
+        materialRef.current.color.set(color);
+        materialRef.current.emissive.set(color);
+      }
+    }
+  });
+
   return (
     <group 
       position={position}
@@ -45,11 +67,12 @@ const TechNode: React.FC<TechNodeProps> = ({ name, icon, position, color, catego
       }}
       onPointerOut={() => onHover(false)}
     >
-      <Sphere args={[0.3, 16, 16]} scale={isHovered ? 1.4 : 1}>
+      <Sphere ref={meshRef} args={[0.3, 16, 16]}>
         <meshStandardMaterial 
-          color={isHovered ? "#ffffff" : color} 
-          emissive={isHovered ? "#ffffff" : color}
-          emissiveIntensity={isHovered ? 2 : 0.5}
+          ref={materialRef}
+          color={color} 
+          emissive={color}
+          emissiveIntensity={0.5}
           metalness={0.8}
           roughness={0.2}
         />
