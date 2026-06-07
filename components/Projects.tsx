@@ -3,6 +3,7 @@ import { PROJECTS } from '../constants';
 import { Project } from '../types';
 import RevealOnScroll from './RevealOnScroll';
 import ProjectModal from './ProjectModal';
+import HoloCard from './HoloCard';
 import { ExternalLink, Github } from 'lucide-react';
 
 const Projects: React.FC = () => {
@@ -47,10 +48,11 @@ const Projects: React.FC = () => {
 
             return (
               <RevealOnScroll key={project.id} delay={index * 50} className={colSpan}>
-                <div 
+                <HoloCard 
                   onClick={() => setSelectedProject(project)}
-                  className={`group glass-panel relative h-full overflow-hidden border border-white/5 transition-all duration-700 hover:-translate-y-2 hover:border-cyan-500/50 hover:shadow-[0_0_50px_rgba(34,211,238,0.1)] cursor-pointer ${minHeight}`}
+                  className={`${minHeight} cursor-pointer group`}
                 >
+                  <div className={`glass-panel relative h-full w-full overflow-hidden border border-white/5 transition-all duration-500 hover:border-cyan-500/50 hover:shadow-[0_0_50px_rgba(34,211,238,0.1)] preserve-3d`}>
                   {/* Background Image with Parallax-like effect */}
                   <div className="absolute inset-0 z-0">
                     <img 
@@ -68,7 +70,8 @@ const Projects: React.FC = () => {
                   </div>
 
                   {/* Project Content */}
-                  <div className={`relative z-20 flex h-full flex-col justify-end p-6 lg:p-10 ${isFullWidth ? 'lg:flex-row lg:items-end lg:justify-between' : ''}`}>
+                  <div className={`relative z-20 flex h-full flex-col justify-end p-6 lg:p-10 ${isFullWidth ? 'lg:flex-row lg:items-end lg:justify-between' : ''}`}
+                       style={{ transform: 'translateZ(30px)' }}>
                     <div className={isFullWidth ? 'lg:max-w-2xl' : ''}>
                       <div className="mb-4 flex items-center gap-3">
                         <span className="text-[10px] font-bold tracking-[0.3em] text-cyan-400 uppercase bg-cyan-400/10 px-3 py-1 border border-cyan-400/20">
@@ -95,7 +98,8 @@ const Projects: React.FC = () => {
                       </div>
                     </div>
 
-                    <div className={`mt-8 flex gap-6 ${isFullWidth ? 'lg:mt-0' : ''}`}>
+                    <div className={`mt-8 flex gap-6 ${isFullWidth ? 'lg:mt-0' : ''}`}
+                         style={{ transform: 'translateZ(50px)' }}>
                       <div className="group/link flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.25em] text-white transition-all hover:text-cyan-400">
                         <ExternalLink className="w-4 h-4 transition-transform group-hover/link:-translate-y-1 group-hover/link:translate-x-1" />
                         Details
@@ -113,7 +117,8 @@ const Projects: React.FC = () => {
                     LON: { (Math.random() * 180).toFixed(4) }<br/>
                     STAT: ACTIVE
                   </div>
-                </div>
+                  </div>
+                </HoloCard>
               </RevealOnScroll>
             );
           })}

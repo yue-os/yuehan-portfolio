@@ -61,6 +61,7 @@ const HoloCard: React.FC<HoloCardProps> = ({ children, className = '', onClick }
             background: `radial-gradient(circle at ${((rotation.y / 30) + 0.5) * 100}% ${((rotation.x / -30) + 0.5) * 100}%, rgba(255,255,255,0.15) 0%, transparent 60%)`,
             transform: 'translateZ(1px)' // Sit slightly above background
           }}
+        />
         {/* Content Layer */}
         <div 
           className="w-full h-full preserve-3d"
@@ -68,8 +69,8 @@ const HoloCard: React.FC<HoloCardProps> = ({ children, className = '', onClick }
         >
           {children}
         </div>
-        </div>
-        </div>
+      </div>
+    </div>
   );
 };
 
