@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import BootSequence from './components/BootSequence';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import Stats from './components/Stats';
@@ -14,6 +15,19 @@ import ViewModeSelector from './components/ViewModeSelector';
 import { ViewMode } from './types';
 
 function App() {
+  const [isBooting, setIsBooting] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const hasBooted = sessionStorage.getItem('hasBooted');
+      return !hasBooted;
+    }
+    return true;
+  });
+
+  const handleBootComplete = () => {
+    sessionStorage.setItem('hasBooted', 'true');
+    setIsBooting(false);
+  };
+
   const mouseGlowRef = useRef<HTMLDivElement>(null);
   const [viewMode, setViewMode] = useState<ViewMode>('arsenal');
   const [isGlitching, setIsGlitching] = useState(false);
@@ -63,41 +77,45 @@ function App() {
 
   return (
     <div className="min-h-screen bg-transparent text-white selection:bg-cyan-500/30 selection:text-cyan-200">
-      {/* Sidebar HUD Interface */}
-      <SidebarHUD />
-
-      {/* Tier 3: Cyber-Space Infrastructure */}
-      <div className="fixed inset-0 z-[-1] overflow-hidden pointer-events-none bg-[#010208]">
-        <SkullBackground mode={viewMode} />
-        <div className="cyber-grid" />
-        <div className="horizon" />
-        <div 
-          ref={mouseGlowRef}
-          className="mouse-glow w-[600px] h-[600px] rounded-full blur-[100px] will-change-transform" 
-        />
-        <div className="glitch-layer" />
-        <div className="scan-beam" />
-        <div className="scanline" />
-      </div>
-
-      {/* Desktop only custom cursor */}
-      <div className="hidden lg:block">
-        <CustomCursor />
-      </div>
-
-      <Navbar onModeChange={handleModeChange} />
+      {isBooting && <BootSequence onComplete={handleBootComplete} />}
       
-      <main className={`relative z-10 ${isGlitching ? 'glitch-active' : ''}`}>
-        <Hero />
-        <Stats />
-        <Services />
-        {viewMode === 'logs' ? <Experience /> : <Projects />}
-        <TechStack />
-      </main>
+      <div style={{ opacity: isBooting ? 0 : 1, transition: 'opacity 0.5s ease-in' }}>
+        {/* Sidebar HUD Interface */}
+        <SidebarHUD />
 
-      <ViewModeSelector currentMode={viewMode} onModeChange={handleModeChange} />
+        {/* Tier 3: Cyber-Space Infrastructure */}
+        <div className="fixed inset-0 z-[-1] overflow-hidden pointer-events-none bg-[#010208]">
+          <SkullBackground mode={viewMode} />
+          <div className="cyber-grid" />
+          <div className="horizon" />
+          <div 
+            ref={mouseGlowRef}
+            className="mouse-glow w-[600px] h-[600px] rounded-full blur-[100px] will-change-transform" 
+          />
+          <div className="glitch-layer" />
+          <div className="scan-beam" />
+          <div className="scanline" />
+        </div>
 
-      <Footer />
+        {/* Desktop only custom cursor */}
+        <div className="hidden lg:block">
+          <CustomCursor />
+        </div>
+
+        <Navbar onModeChange={handleModeChange} />
+        
+        <main className={`relative z-10 ${isGlitching ? 'glitch-active' : ''}`}>
+          <Hero />
+          <Stats />
+          <Services />
+          {viewMode === 'logs' ? <Experience /> : <Projects />}
+          <TechStack />
+        </main>
+
+        <ViewModeSelector currentMode={viewMode} onModeChange={handleModeChange} />
+
+        <Footer />
+      </div>
     </div>
   );
 }
