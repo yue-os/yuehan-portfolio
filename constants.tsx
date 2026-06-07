@@ -12,7 +12,7 @@ import {
   Instagram,
   MessageSquare
 } from 'lucide-react';
-import { Project, Service, Stat, SocialLink } from './types';
+import { Project, Service, Stat, SocialLink, Experience } from './types';
 
 export const HERO_HEADLINE = "Yuehan: Small progress, still a progress.";
 export const HERO_SUB = "Full-Stack Developer | Game Dev | Cybersecurity knowledgeable with 2+ years of experience.";
