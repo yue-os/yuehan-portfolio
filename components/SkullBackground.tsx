@@ -49,6 +49,7 @@ const MovingSkull: React.FC<{ scale: number }> = ({ scale }) => {
   const rightEyeLightRef = useRef<THREE.PointLight>(null);
   const scrollY = useRef(0);
   const timer = useMemo(() => new (THREE as any).Timer(), []);
+  const lookTarget = useRef(new THREE.Vector3(0, 0, 12));
   const skullObjUrl = useMemo(() => new URL('../assets/skull/skull.obj', import.meta.url).href, []);
   const skullMtlUrl = useMemo(() => new URL('../assets/skull/skull.mtl', import.meta.url).href, []);
 
@@ -86,24 +87,32 @@ const MovingSkull: React.FC<{ scale: number }> = ({ scale }) => {
     const xPercent = Math.min(Math.max(scrollPercent, 0), 1);
 
     if (skullRef.current) {
+      const lerpFactor = 0.05;
       const targetX = (state.pointer.x * viewport.width) / 14;
       const targetY = (state.pointer.y * viewport.height) / 14;
       
-      skullRef.current.position.y = THREE.MathUtils.lerp(3.5, -12, scrollPercent) + targetY;
+      const calculatedY = THREE.MathUtils.lerp(3.5, -12, scrollPercent);
+      let calculatedX = 0;
       if (xPercent < 0.33) {
-        skullRef.current.position.x = THREE.MathUtils.lerp(0, -4.4, xPercent / 0.33) + targetX;
+        calculatedX = THREE.MathUtils.lerp(0, -4.4, xPercent / 0.33);
       } else if (xPercent < 0.66) {
-        skullRef.current.position.x = THREE.MathUtils.lerp(-4.4, 4.3, (xPercent - 0.33) / 0.33) + targetX;
+        calculatedX = THREE.MathUtils.lerp(-4.4, 4.3, (xPercent - 0.33) / 0.33);
       } else {
-        skullRef.current.position.x = THREE.MathUtils.lerp(4.3, -4.0, (xPercent - 0.66) / 0.34) + targetX;
+        calculatedX = THREE.MathUtils.lerp(4.3, -4.0, (xPercent - 0.66) / 0.34);
       }
+
+      // Update positions using lerp instead of direct assignment
+      skullRef.current.position.x = THREE.MathUtils.lerp(skullRef.current.position.x, calculatedX + targetX, lerpFactor);
+      skullRef.current.position.y = THREE.MathUtils.lerp(skullRef.current.position.y, calculatedY + targetY, lerpFactor);
       skullRef.current.position.z = -5;
       
       const targetPos = new THREE.Vector3().copy(state.camera.position);
-      targetPos.x += state.pointer.x * 1.5;
-      targetPos.y += state.pointer.y * 1.5;
+      targetPos.x += state.pointer.x * 2;
+      targetPos.y += state.pointer.y * 2;
       
-      skullRef.current.lookAt(targetPos);
+      // Smooth Gaze tracking
+      lookTarget.current.lerp(targetPos, lerpFactor);
+      skullRef.current.lookAt(lookTarget.current);
       skullRef.current.rotation.z += Math.sin(elapsed * 0.3) * 0.04;
     }
   });
