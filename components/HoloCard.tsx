@@ -53,9 +53,23 @@ const HoloCard: React.FC<HoloCardProps> = ({ children, className = '', onClick }
           transition: isHovered ? 'none' : 'transform 0.5s ease-out'
         }}
       >
-        {children}
-      </div>
-    </div>
+        {/* Glare Layer */}
+        <div 
+          className="absolute inset-0 pointer-events-none rounded-sm z-50 transition-opacity duration-300"
+          style={{
+            opacity: isHovered ? 1 : 0,
+            background: `radial-gradient(circle at ${((rotation.y / 30) + 0.5) * 100}% ${((rotation.x / -30) + 0.5) * 100}%, rgba(255,255,255,0.15) 0%, transparent 60%)`,
+            transform: 'translateZ(1px)' // Sit slightly above background
+          }}
+        {/* Content Layer */}
+        <div 
+          className="w-full h-full preserve-3d"
+          style={{ transform: 'translateZ(0px)' }}
+        >
+          {children}
+        </div>
+        </div>
+        </div>
   );
 };
 
