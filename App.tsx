@@ -10,8 +10,7 @@ import Footer from './components/Footer';
 import CustomCursor from './components/CustomCursor';
 import SkullBackground from './components/SkullBackground';
 import SidebarHUD from './components/SidebarHUD';
-
-type ViewMode = 'arsenal' | 'logs';
+import { ViewMode } from './types';
 
 function App() {
   const mouseGlowRef = useRef<HTMLDivElement>(null);

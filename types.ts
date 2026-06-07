@@ -1,5 +1,7 @@
 import React from 'react';
 
+export type ViewMode = 'arsenal' | 'logs';
+
 export interface Project {
   id: string;
   title: string;
