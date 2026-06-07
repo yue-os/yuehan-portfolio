@@ -61,6 +61,10 @@ const MovingSkull: React.FC<{ scale: number }> = ({ scale }) => {
       if ((child as THREE.Mesh).isMesh) {
         const mesh = child as THREE.Mesh;
         mesh.castShadow = true;
+        if (mesh.material) {
+          (mesh.material as THREE.MeshStandardMaterial).color.set('#111111');
+          (mesh.material as THREE.MeshStandardMaterial).roughness = 0.8;
+        }
       }
     });
   }, [skullModel]);
@@ -122,16 +126,11 @@ const SkullBackground: React.FC<{ scale?: number }> = ({ scale = .50 }) => {
         dpr={1} 
         gl={{ powerPreference: "high-performance", antialias: false, alpha: true }}
       >
-        <fog attach="fog" args={['#010208', 10, 30]} />
-        <ambientLight intensity={0.4} />
+        <fog attach="fog" args={['#010208', 5, 25]} />
+        <ambientLight intensity={0.1} />
         
         {/* Optimized Starfield */}
-        <Stars radius={100} depth={50} count={2000} factor={4} saturation={0} fade speed={1} />
-        
-        <directionalLight position={[4, 8, 8]} intensity={1.5} color="#fff7ea" />
-        <pointLight position={[10, 10, 10]} intensity={3} color="#dc2626" />
-        <pointLight position={[-10, -10, 10]} intensity={2} color="#22d3ee" />
-        <spotLight position={[0, 15, 10]} angle={0.5} penumbra={1} intensity={5} color="#dc2626" />
+        <Stars radius={100} depth={50} count={1000} factor={4} saturation={0} fade speed={0.5} />
 
         <Suspense fallback={null}>
           <MovingSkull scale={scale} />
