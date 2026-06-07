@@ -275,3 +275,12 @@ body::before {
   animation: panel-scanline 2s linear infinite;
   pointer-events: none;
 }
+
+@keyframes crt-flash {
+  0% { background-color: #ffffff; opacity: 1; }
+  100% { background-color: transparent; opacity: 0; }
+}
+
+.animate-crt-flash {
+  animation: crt-flash 0.5s ease-out forwards;
+}
