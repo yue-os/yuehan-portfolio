@@ -1,7 +1,7 @@
 import { ArrowDown, ArrowRight, ArrowUpRight, Braces, Github, Linkedin, Menu, Terminal, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import batangAwareImage from './assets/batangaware.png';
-import profilePhoto from './assets/profile.jpg';
+import profilePhoto from './assets/profile_2.jpg';
 
 type Project = {
   number: string;
