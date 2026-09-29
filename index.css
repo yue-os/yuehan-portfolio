@@ -24,6 +24,8 @@
 }
 
 * { box-sizing: border-box; }
+* { scrollbar-width: none; -ms-overflow-style: none; }
+*::-webkit-scrollbar { display: none; }
 html { min-width: 320px; scroll-behavior: smooth; scroll-padding-top: 90px; }
 body { min-width: 320px; margin: 0; background: var(--bg); }
 body::before { position: fixed; inset: 0; z-index: -1; background: radial-gradient(ellipse at 50% -20%, rgba(178, 212, 135, .075), transparent 55%); content: ''; pointer-events: none; }
@@ -196,7 +198,8 @@ button:focus-visible, a:focus-visible, summary:focus-visible { outline: 2px soli
 .walkthrough-terminal-body { padding: 24px 25px 25px; color: #d0d8cc; font-family: var(--mono); font-size: 12px; line-height: 2.2; }
 .walkthrough-terminal-footer { display: flex; padding: 11px 16px; justify-content: space-between; border-top: 1px solid #272d27; color: #75816e; font-family: var(--mono); font-size: 8px; letter-spacing: .1em; }
 .walkthrough-browser { display: grid; padding-top: 22px; padding-bottom: 100px; align-items: start; gap: 25px; grid-template-columns: minmax(265px, .36fr) minmax(0, 1fr); }
-.walkthrough-index { position: sticky; top: 86px; min-width: 0; }
+.walkthrough-index { position: sticky; top: 86px; display: flex; min-width: 0; max-height: calc(100vh - 102px); flex-direction: column; }
+@supports (height: 100dvh) { .walkthrough-index { max-height: calc(100dvh - 102px); } }
 .walkthrough-index-heading { display: flex; margin-bottom: 16px; align-items: flex-end; justify-content: space-between; gap: 10px; }
 .walkthrough-index-heading .eyebrow { margin-bottom: 11px; }
 .walkthrough-index-heading h2 { margin: 0; color: var(--ink); font-size: 21px; font-weight: 600; letter-spacing: -.045em; }
@@ -206,7 +209,7 @@ button:focus-visible, a:focus-visible, summary:focus-visible { outline: 2px soli
 .walkthrough-search:focus-within { border-color: #667e4d; box-shadow: 0 0 0 3px #91b75b12; }
 .walkthrough-search input { width: 100%; min-width: 0; border: 0; outline: 0; background: transparent; color: var(--ink); font-family: inherit; font-size: 11px; }
 .walkthrough-search input::placeholder { color: #6f786d; }
-.walkthrough-list { display: grid; gap: 6px; }
+.walkthrough-list { display: grid; min-height: 0; flex: 1 1 auto; gap: 6px; overflow-y: auto; overscroll-behavior-y: contain; }
 .walkthrough-list-item { display: grid; width: 100%; min-width: 0; min-height: 58px; padding: 7px 9px; align-items: center; gap: 10px; border: 1px solid transparent; border-radius: 6px; background: transparent; color: inherit; cursor: pointer; text-align: left; grid-template-columns: 32px minmax(0, 1fr) 7px 15px; transition: background .2s, border-color .2s, transform .2s; }
 .walkthrough-list-item:hover { border-color: #323b31; background: #141814; transform: translateX(2px); }
 .walkthrough-list-item.is-active { border-color: #425239; background: linear-gradient(110deg, #1a2118, #131713); box-shadow: inset 2px 0 var(--lime); }
@@ -288,7 +291,8 @@ button:focus-visible, a:focus-visible, summary:focus-visible { outline: 2px soli
   .walkthrough-hero h1 { font-size: clamp(45px, 12vw, 65px); }
   .walkthrough-terminal { max-width: 480px; transform: none; }
   .walkthrough-browser { padding-top: 18px; padding-bottom: 70px; grid-template-columns: 1fr; }
-  .walkthrough-index { position: static; }
+  .walkthrough-index { position: static; display: block; max-height: none; }
+  .walkthrough-list { min-height: auto; flex: none; overflow: visible; }
   .walkthrough-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .walkthrough-list-item { padding: 7px; gap: 7px; grid-template-columns: 32px minmax(0, 1fr) 6px; }
   .walkthrough-list-number { display: none; }
