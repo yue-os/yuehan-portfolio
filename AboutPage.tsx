@@ -1,6 +1,7 @@
-import { ArrowRight, ArrowUpRight, BookOpen, BriefcaseBusiness, ChevronLeft, ChevronRight, Code2, Github, GraduationCap, Linkedin, Mail, Menu, ShieldCheck, Terminal, X } from 'lucide-react';
+import { ArrowRight, ArrowUpRight, BookOpen, BriefcaseBusiness, ChevronLeft, ChevronRight, Code2, Github, GraduationCap, Linkedin, Mail, Menu, Play, ShieldCheck, Terminal, X } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import profilePhoto from './assets/profile_2.jpg';
+import demoReel from './assets/DemoReel.mp4';
 import { ojtPhotos, ojtWeeks } from './ojtJourney';
 
 const githubUrl = 'https://github.com/yue-os';
@@ -52,6 +53,8 @@ const skillGroups = [
 function AboutPage() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [photoIndex, setPhotoIndex] = useState<number | null>(null);
+  const [isReelPlaying, setIsReelPlaying] = useState(false);
+  const reelVideoRef = useRef<HTMLVideoElement>(null);
   const viewerRef = useRef<HTMLDivElement>(null);
   const closePhotoButtonRef = useRef<HTMLButtonElement>(null);
   const closeMenu = () => setMenuOpen(false);
@@ -137,6 +140,7 @@ function AboutPage() {
             <p>I’m John Mark Calimbo, a fourth-year Information Technology student at Pamantasan ng Lungsod ng Valenzuela, expected to graduate in 2027. I enjoy building useful web products, backend systems, and games, with a growing focus on security.</p>
             <div className="about-hero-actions">
               <a className="button button-primary" href="#experience">Explore my experience <ArrowRight size={16} /></a>
+              <a className="button button-secondary" href="#demo-reel"><Play size={14} /> Watch the demo reel</a>
               <a className="button button-secondary" href={`mailto:${email}`}><Mail size={15} /> Email me</a>
             </div>
           </div>
@@ -153,6 +157,57 @@ function AboutPage() {
               <div><span>MEMBERSHIP</span><b>ISC2 Candidate</b></div>
             </div>
           </aside>
+        </section>
+
+        <section className="about-reel-section" id="demo-reel" aria-labelledby="about-reel-title">
+          <div className="section-wrap about-reel-wrap">
+            <div className="about-reel-heading">
+              <div>
+                <p className="eyebrow section-eyebrow">SELECTED WORK <span className="heading-line" /></p>
+                <h2 id="about-reel-title">A glimpse into <span>what I build.</span></h2>
+              </div>
+              <p>A short reel of the ideas, interfaces, and systems I love bringing to life.</p>
+            </div>
+            <div className="about-reel-frame">
+              <div className="about-reel-frame-top">
+                <div className="about-reel-window-dots" aria-hidden="true"><i /><i /><i /></div>
+                <span>JOHN MARK CALIMBO <i>/</i> DEMO REEL</span>
+                <span className="about-reel-frame-status"><i /> FEATURED REEL</span>
+              </div>
+              <div className="about-reel-stage">
+                <video
+                  ref={reelVideoRef}
+                  className="about-reel-video"
+                  controls
+                  playsInline
+                  preload="metadata"
+                  aria-label="Demo reel by John Mark Calimbo"
+                  onPlay={() => setIsReelPlaying(true)}
+                  onPause={() => setIsReelPlaying(false)}
+                  onEnded={() => setIsReelPlaying(false)}
+                >
+                  <source src={demoReel} type="video/mp4" />
+                  Your browser does not support MP4 video. You can <a href={demoReel}>download the demo reel</a> instead.
+                </video>
+                {!isReelPlaying && (
+                  <button
+                    className="about-reel-play"
+                    type="button"
+                    aria-label="Play demo reel"
+                    onClick={() => { void reelVideoRef.current?.play().catch(() => setIsReelPlaying(false)); }}
+                  >
+                    <span className="about-reel-play-icon"><Play size={22} fill="currentColor" /></span>
+                    <span>PLAY THE REEL <i>FULL REEL · PRESS PLAY</i></span>
+                  </button>
+                )}
+                <span className="about-reel-stage-index" aria-hidden="true">JM—01</span>
+              </div>
+              <div className="about-reel-caption">
+                <div><span>BUILT WITH CURIOSITY</span><b>From solid foundations to polished experiences.</b></div>
+                <a href="#experience">Explore the work <ArrowUpRight size={14} /></a>
+              </div>
+            </div>
+          </div>
         </section>
 
         <section className="about-intro-band">
