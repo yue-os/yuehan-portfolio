@@ -14,6 +14,8 @@ export default defineConfig(({ mode }) => {
         rollupOptions: {
           input: {
             main: path.resolve(__dirname, 'index.html'),
+            about: path.resolve(__dirname, 'about.html'),
+            projects: path.resolve(__dirname, 'projects.html'),
             walkthroughs: path.resolve(__dirname, 'walkthroughs.html'),
           },
         },

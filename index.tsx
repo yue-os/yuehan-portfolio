@@ -2,6 +2,7 @@ import React, { Component, ReactNode } from 'react';
 import { createRoot } from 'react-dom/client';
 import App from './App';
 import './index.css';
+import { initializePageTransitions } from './pageTransitions';
 
 interface Props {
   children: ReactNode;
@@ -45,6 +46,8 @@ const rootElement = document.getElementById('root');
 if (!rootElement) {
   throw new Error("Could not find root element to mount to");
 }
+
+initializePageTransitions();
 
 const root = createRoot(rootElement);
 root.render(

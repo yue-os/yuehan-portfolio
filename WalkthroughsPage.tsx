@@ -249,9 +249,9 @@ function WalkthroughsPage() {
           <a className="wordmark" href="/index.html#top" aria-label="John Mark Calimbo, home"><span className="wordmark-icon"><Terminal size={17} strokeWidth={2.2} /></span><span>yuehan<span className="wordmark-dot">.</span></span></a>
           <button className="menu-toggle" type="button" aria-label={menuOpen ? 'Close navigation' : 'Open navigation'} aria-expanded={menuOpen} onClick={() => setMenuOpen(!menuOpen)}>{menuOpen ? <X size={20} /> : <Menu size={20} />}</button>
           <nav className={menuOpen ? 'main-nav is-open' : 'main-nav'} aria-label="Main navigation">
-            <a href="/index.html#work" onClick={() => setMenuOpen(false)}>Projects</a>
+            <a href="/projects.html" onClick={() => setMenuOpen(false)}>Projects</a>
             <a className="active-nav-link" href="/walkthroughs.html" aria-current="page" onClick={() => setMenuOpen(false)}>Walkthroughs</a>
-            <a href="/index.html#about" onClick={() => setMenuOpen(false)}>About</a>
+            <a href="/about.html" onClick={() => setMenuOpen(false)}>About</a>
             <a className="nav-contact" href="https://www.linkedin.com/in/john-mark-c-51630a300/" target="_blank" rel="noreferrer" onClick={() => setMenuOpen(false)}>LinkedIn <ArrowUpRight size={15} /></a>
           </nav>
         </div>
